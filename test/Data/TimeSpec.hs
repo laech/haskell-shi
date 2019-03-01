@@ -28,5 +28,5 @@ instantSpec = describe "Instant" $ do
     toEpochMillis (Instant 11 200000000) `shouldBe` 11200
 
   it "`toEpochMillis` returns correct value for time in past" $ do
-    toEpochMillis (Instant (-1) 2) `shouldBe` 999
-    toEpochMillis (Instant 1 200000000) `shouldBe` 800
+    toEpochMillis (Instant (-1) 2) `shouldBe` (-1000)
+    toEpochMillis (Instant (-1) 200000000) `shouldBe` (-800)

@@ -10,6 +10,5 @@ data Instant = Instant
   } deriving (Eq, Ord, Show)
 
 toEpochMillis :: Instant -> Integer
-toEpochMillis (Instant sec nano)
-  | sec >= 0  = sec * 1000 + fromIntegral (nano `div` 1000000)
-  | otherwise = sec * 1000 + fromIntegral (nano `div` 1000000) -- TODO
+toEpochMillis (Instant sec nano) =
+  sec * 1000 + fromIntegral (nano `div` 1000000)
