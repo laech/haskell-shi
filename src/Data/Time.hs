@@ -1,6 +1,6 @@
 module Data.Time
   ( Instant(..)
-  , toEpochMillis
+  , toEpochMilli
   )
 where
 
@@ -13,7 +13,6 @@ data Instant = Instant
 epoch :: Instant
 epoch = Instant 0 0
 
--- | Converts an instant to number of milliseconds since 'epoch'.
-toEpochMillis :: Instant -> Integer
-toEpochMillis (Instant sec nano) =
-  sec * 1000 + fromIntegral (nano `div` 1000000)
+-- | Converts an instant to the millisecond since 'epoch'.
+toEpochMilli :: Instant -> Integer
+toEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)

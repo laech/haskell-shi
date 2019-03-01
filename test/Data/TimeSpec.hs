@@ -20,13 +20,13 @@ instantSpec = describe "Instant" $ do
     (Instant 1 3 `compare` Instant 1 2) `shouldBe` GT
     (Instant 2 2 `compare` Instant 1 2) `shouldBe` GT
 
-  it "`toEpochMillis` returns 0 for epoch time"
-     (toEpochMillis (Instant 0 0) `shouldBe` 0)
+  it "`toEpochMilli` returns 0 for epoch time"
+     (toEpochMilli (Instant 0 0) `shouldBe` 0)
 
-  it "`toEpochMillis` returns correct value for time in future" $ do
-    toEpochMillis (Instant 1 2) `shouldBe` 1000
-    toEpochMillis (Instant 11 200000000) `shouldBe` 11200
+  it "`toEpochMilli` returns correct value for time in future" $ do
+    toEpochMilli (Instant 1 2) `shouldBe` 1000
+    toEpochMilli (Instant 11 200000000) `shouldBe` 11200
 
-  it "`toEpochMillis` returns correct value for time in past" $ do
-    toEpochMillis (Instant (-1) 2) `shouldBe` (-1000)
-    toEpochMillis (Instant (-1) 200000000) `shouldBe` (-800)
+  it "`toEpochMilli` returns correct value for time in past" $ do
+    toEpochMilli (Instant (-1) 2) `shouldBe` (-1000)
+    toEpochMilli (Instant (-1) 200000000) `shouldBe` (-800)
