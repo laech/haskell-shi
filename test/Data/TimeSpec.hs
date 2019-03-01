@@ -33,10 +33,10 @@ instantSpec = describe "Instant" $ do
   it "`toEpochMilli` returns 0 for epoch time"
      (toEpochMilli (Instant 0 0) `shouldBe` 0)
 
-  it "`toEpochMilli` returns correct value for time in future" $ do
+  it "`toEpochMilli` returns correct value for time after epoch" $ do
     toEpochMilli (Instant 1 2) `shouldBe` 1000
     toEpochMilli (Instant 11 200000000) `shouldBe` 11200
 
-  it "`toEpochMilli` returns correct value for time in past" $ do
+  it "`toEpochMilli` returns correct value for time before epoch" $ do
     toEpochMilli (Instant (-1) 2) `shouldBe` (-1000)
     toEpochMilli (Instant (-1) 200000000) `shouldBe` (-800)
