@@ -9,14 +9,14 @@ spec = instantSpec
 instantSpec :: Spec
 instantSpec = describe "Instant" $ do
 
-  it "equals another when values equal"
+  it "`compare` returns EQ when values equal"
      ((Instant 1 2 `compare` Instant 1 2) `shouldBe` EQ)
 
-  it "less than another when value is less" $ do
+  it "`compare` returns LT when value is less" $ do
     (Instant 1 2 `compare` Instant 1 3) `shouldBe` LT
     (Instant 1 2 `compare` Instant 2 2) `shouldBe` LT
 
-  it "greater than another when value is greater" $ do
+  it "`compare` returns GT when value is greater" $ do
     (Instant 1 3 `compare` Instant 1 2) `shouldBe` GT
     (Instant 2 2 `compare` Instant 1 2) `shouldBe` GT
 
