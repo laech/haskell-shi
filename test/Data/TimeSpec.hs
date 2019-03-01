@@ -6,6 +6,7 @@ import           Test.Hspec
 spec :: Spec
 spec = instantSpec
 
+instantSpec :: Spec
 instantSpec = describe "Instant" $ do
 
   it "equals another when values equal"
