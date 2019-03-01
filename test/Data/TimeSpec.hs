@@ -20,6 +20,16 @@ instantSpec = describe "Instant" $ do
     (Instant 1 3 `compare` Instant 1 2) `shouldBe` GT
     (Instant 2 2 `compare` Instant 1 2) `shouldBe` GT
 
+  it "`fromEpochMilli` returns epoch for 0" $ fromEpochMilli 0 `shouldBe` epoch
+
+  it "`fromEpochMilli` returns instant after epoch for positive value" $ do
+    fromEpochMilli 1 `shouldBe` Instant 0 1000000
+    fromEpochMilli 123456 `shouldBe` Instant 123 456000000
+
+  it "`fromEpochMilli` returns instant before epoch for negative value" $ do
+    fromEpochMilli (-1) `shouldBe` Instant (-1) 999000000
+    fromEpochMilli (-10200) `shouldBe` Instant (-11) 800000000
+
   it "`toEpochMilli` returns 0 for epoch time"
      (toEpochMilli (Instant 0 0) `shouldBe` 0)
 
