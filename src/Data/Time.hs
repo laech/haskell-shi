@@ -1,5 +1,6 @@
 module Data.Time
   ( Instant(..)
+  , epoch
   , toEpochMilli
   )
 where
