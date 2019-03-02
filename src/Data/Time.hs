@@ -5,8 +5,13 @@ module Data.Time
   , toEpochMilli
   , isLeapYear
   , Month(..)
+  , monthOf
   )
 where
+
+import           Data.Maybe
+import           Prelude                 hiding ( fail )
+import           Control.Monad.Fail
 
 data Instant = Instant
   { getEpochSecond :: Integer
@@ -49,7 +54,7 @@ data Month
   | December
   deriving (Eq, Ord, Bounded, Show)
 
--- | January -> 1, February -> 2, etc.
+-- | January is 1, February is 2, etc.
 instance Enum Month where
 
   fromEnum month = case month of
@@ -66,17 +71,22 @@ instance Enum Month where
     November  -> 11
     December  -> 12
 
-  toEnum i = case i of
-    1  -> January
-    2  -> February
-    3  -> March
-    4  -> April
-    5  -> May
-    6  -> June
-    7  -> July
-    8  -> August
-    9  -> September
-    10 -> October
-    11 -> November
-    12 -> December
-    _  -> error ("Uknown month: " ++ show i)
+  toEnum i = fromMaybe (error $ "Uknown month: " ++ show i) (monthOf i)
+
+-- | Converts a numeric month to a 'Month', 
+-- fails if given value is not between 1..12.
+monthOf :: MonadFail m => Int -> m Month
+monthOf i = case i of
+  1  -> pure January
+  2  -> pure February
+  3  -> pure March
+  4  -> pure April
+  5  -> pure May
+  6  -> pure June
+  7  -> pure July
+  8  -> pure August
+  9  -> pure September
+  10 -> pure October
+  11 -> pure November
+  12 -> pure December
+  _  -> fail ("Uknown month: " ++ show i)

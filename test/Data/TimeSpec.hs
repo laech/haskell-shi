@@ -57,27 +57,31 @@ yearSpec = describe "Year" $ describe "isLeapYear" $ do
   it "unless it's divisible by 400" $ isLeapYear 1600 `shouldBe` True
   it "false otherwise" $ isLeapYear 2019 `shouldBe` False
 
+-- | Months in the order we expect
 months :: [Month]
-months = [minBound .. maxBound]
+months =
+  [ January
+  , February
+  , March
+  , April
+  , May
+  , June
+  , July
+  , August
+  , September
+  , October
+  , November
+  , December
+  ]
 
 monthSpec :: Spec
 monthSpec = describe "Month" $ do
-  it "produces natural enum integers" $ map fromEnum months `shouldBe` [1 .. 12]
-  it "sorts naturally"
-    $ let expected =
-            [ January
-            , February
-            , March
-            , April
-            , May
-            , June
-            , July
-            , August
-            , September
-            , October
-            , November
-            , December
-            ]
-      in  do
-            sort expected `shouldBe` expected
-            months `shouldBe` expected
+
+  it "produces natural month numbers" (map fromEnum months `shouldBe` [1 .. 12])
+
+  it "creates from natural month numbers"
+     (mapM monthOf [1 .. 12] `shouldBe` Just months)
+
+  it "sorts naturally" $ do
+    sort months `shouldBe` months
+    [minBound .. maxBound] `shouldBe` months
