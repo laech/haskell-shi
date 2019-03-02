@@ -1,5 +1,6 @@
 module Data.TimeSpec where
 
+import           Data.List                      ( sort )
 import           Data.Time
 import           Test.Hspec
 
@@ -7,6 +8,7 @@ spec :: Spec
 spec = do
   instantSpec
   yearSpec
+  monthSpec
 
 instantSpec :: Spec
 instantSpec = describe "Instant" $ do
@@ -54,3 +56,28 @@ yearSpec = describe "Year" $ describe "isLeapYear" $ do
   it "but not divisible by 100" $ isLeapYear 1700 `shouldBe` False
   it "unless it's divisible by 400" $ isLeapYear 1600 `shouldBe` True
   it "false otherwise" $ isLeapYear 2019 `shouldBe` False
+
+months :: [Month]
+months = [minBound .. maxBound]
+
+monthSpec :: Spec
+monthSpec = describe "Month" $ do
+  it "produces natural enum integers" $ map fromEnum months `shouldBe` [1 .. 12]
+  it "sorts naturally"
+    $ let expected =
+            [ January
+            , February
+            , March
+            , April
+            , May
+            , June
+            , July
+            , August
+            , September
+            , October
+            , November
+            , December
+            ]
+      in  do
+            sort expected `shouldBe` expected
+            months `shouldBe` expected
