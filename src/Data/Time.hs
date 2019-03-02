@@ -3,6 +3,7 @@ module Data.Time
   , epoch
   , fromEpochMilli
   , toEpochMilli
+  , isLeapYear
   )
 where
 
@@ -25,3 +26,9 @@ fromEpochMilli ms = Instant sec ns
 -- | Converts an instant to the millisecond since 'epoch'.
 toEpochMilli :: Instant -> Integer
 toEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)
+
+-- | A year is a leap year if it is divisible by 4
+-- but not divisible by 100 unless it's divisible by 400.
+isLeapYear :: Integer -> Bool
+isLeapYear year =
+  year `mod` 4 == 0 && (year `mod` 100 /= 0 || year `mod` 400 == 0)
