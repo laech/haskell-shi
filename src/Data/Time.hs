@@ -72,7 +72,7 @@ instance Enum Month where
     November  -> 11
     December  -> 12
 
-  toEnum i = fromMaybe (error $ "Uknown month: " ++ show i) (monthOf i)
+  toEnum i = fromMaybe (error $ "Invalid month: " ++ show i) (monthOf i)
 
 -- | Converts a numeric month to a 'Month', 
 -- fails if given value is not between 1..12.
@@ -90,7 +90,7 @@ monthOf i = case i of
   10 -> pure October
   11 -> pure November
   12 -> pure December
-  _  -> fail ("Uknown month: " ++ show i)
+  _  -> fail ("Invalid month: " ++ show i)
 
 -- | Gets the number of days in a month.
 getDaysInMonth
