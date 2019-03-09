@@ -9,6 +9,7 @@ spec = do
   instantSpec
   yearSpec
   monthSpec
+  localDateSpec
 
 instantSpec :: Spec
 instantSpec = describe "Instant" $ do
@@ -104,3 +105,29 @@ monthSpec = describe "Month" $ do
     it "October has 31 days"     (expectDaysInMonth October 31 31)
     it "November has 30 days"    (expectDaysInMonth November 30 30)
     it "December has 31 days"    (expectDaysInMonth December 31 31)
+
+localDateSpec :: Spec
+localDateSpec = describe "LocalDate" $
+
+  describe "compare" $ do
+
+    it "returns EQ when values equal"
+       ((LocalDate 1 2 3 `compare` LocalDate 1 2 3) `shouldBe` EQ)
+
+    it "returns LT when year is less"
+       ((LocalDate 1 2 3 `compare` LocalDate 2 2 3) `shouldBe` LT)
+
+    it "returns LT when month is less"
+       ((LocalDate 1 2 3 `compare` LocalDate 1 3 3) `shouldBe` LT)
+
+    it "returns LT when day is less"
+       ((LocalDate 1 2 3 `compare` LocalDate 1 2 4) `shouldBe` LT)
+
+    it "returns GT when year is greater"
+       ((LocalDate 2 2 3 `compare` LocalDate 1 2 3) `shouldBe` GT)
+
+    it "returns GT when month is greater"
+       ((LocalDate 1 3 3 `compare` LocalDate 1 2 3) `shouldBe` GT)
+
+    it "returns GT when day is greater"
+       ((LocalDate 1 2 4 `compare` LocalDate 1 2 3) `shouldBe` GT)

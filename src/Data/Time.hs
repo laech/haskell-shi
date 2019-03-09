@@ -7,6 +7,7 @@ module Data.Time
   , Month(..)
   , monthOf
   , getDaysInMonth
+  , LocalDate(..)
   )
 where
 
@@ -110,3 +111,10 @@ getDaysInMonth month leapYear = case month of
   October   -> 31
   November  -> 30
   December  -> 31
+
+-- | A date without time zone.
+data LocalDate = LocalDate
+ { getYear :: Integer
+ , getMonth :: Int
+ , getDayOfMonth :: Int
+ } deriving (Eq, Ord, Show)
