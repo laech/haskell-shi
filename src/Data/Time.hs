@@ -4,6 +4,7 @@ module Data.Time
   , fromEpochMilli
   , toEpochMilli
   , isLeapYear
+  , getDaysInYear
   , Month(..)
   , monthOf
   , getDaysInMonth
@@ -40,6 +41,10 @@ toEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)
 isLeapYear :: Integer -> Bool
 isLeapYear year =
   year `mod` 4 == 0 && (year `mod` 100 /= 0 || year `mod` 400 == 0)
+
+-- | Gets the number of days in a year.
+getDaysInYear :: Integer -> Int
+getDaysInYear year = if isLeapYear year then 366 else 365
 
 data Month
   = January
