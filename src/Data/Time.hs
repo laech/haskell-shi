@@ -100,10 +100,10 @@ monthOf i = case i of
 
 -- | Gets the number of days in a month.
 getDaysInMonth
-  :: Month
-  -> Bool -- ^ Is leap year?
+  :: Bool -- ^ Is leap year?
+  -> Month
   -> Int
-getDaysInMonth month leapYear = case month of
+getDaysInMonth leapYear month = case month of
   January   -> 31
   February  -> if leapYear then 29 else 28
   March     -> 31

@@ -96,7 +96,7 @@ monthSpec = describe "Month" $ do
   describe "getDaysInMonth" $ do
 
     let expectDaysInMonth month daysInNonLeapYear daysInLeapYear =
-          map (getDaysInMonth month) [False, True]
+          [getDaysInMonth False month, getDaysInMonth True month]
             `shouldBe` [daysInNonLeapYear, daysInLeapYear]
 
     it "January has 31 days"     (expectDaysInMonth January 31 31)
