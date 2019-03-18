@@ -9,6 +9,7 @@ module Data.Time
   , monthOf
   , getDaysInMonth
   , LocalDate(..)
+  , toEpochDay
   )
 where
 
@@ -123,3 +124,19 @@ data LocalDate = LocalDate
  , getMonth :: Int
  , getDayOfMonth :: Int
  } deriving (Eq, Ord, Show)
+
+-- | The day count since epoch, where day 0 is 1970-01-01.
+toEpochDay :: LocalDate -> Integer
+toEpochDay (LocalDate y month day) =
+  -- Ported from java.time.LocalDate.toEpochDay
+  365
+    * y
+    + (if y >= 0
+        then (y + 3) `div` 4 - (y + 99) `div` 100 + (y + 399) `div` 400
+        else -(y `div` (-4) - y `div` (-100) + y `div` (-400))
+      )
+    + fromIntegral ((367 * month - 362) `div` 12)
+    + fromIntegral (day - 1)
+    + (if month <= 2 then 0 else if isLeapYear y then (-1) else (-2))
+    - numDaysFromYear0To1970
+  where numDaysFromYear0To1970 = 719528
