@@ -183,3 +183,19 @@ localDateSpec = describe "LocalDate" $ do
       toEpochDay (LocalDate (-785520990) 2 4) `shouldBe` (-286906369684)
       toEpochDay (LocalDate (-26911170) 6 23) `shouldBe` (-9829822363)
       toEpochDay (LocalDate (-296189792) 6 13) `shouldBe` (-108181819469)
+
+  describe "localDateOf" $ do
+
+    it "fails on invalid dates" $ do
+      localDateOf 1970 2 29 `shouldBe` Nothing
+      localDateOf 1970 0 1 `shouldBe` Nothing
+      localDateOf 1970 1 0 `shouldBe` Nothing
+      localDateOf 2000 1 90 `shouldBe` Nothing
+      localDateOf 2011 (-1) 1 `shouldBe` Nothing
+      localDateOf 2018 1 (-3) `shouldBe` Nothing
+
+    it "returns valid dates" $ do
+      localDateOf 1970 1 1 `shouldBe` Just (LocalDate 1970 1 1)
+      localDateOf 2000 2 29 `shouldBe` Just (LocalDate 2000 2 29)
+      localDateOf (-1) 1 31 `shouldBe` Just (LocalDate (-1) 1 31)
+      localDateOf 99999 12 31 `shouldBe` Just (LocalDate 99999 12 31)

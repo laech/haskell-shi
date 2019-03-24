@@ -9,6 +9,7 @@ module Data.Time
   , monthOf
   , getDaysInMonth
   , LocalDate(..)
+  , localDateOf
   , toEpochDay
   )
 where
@@ -124,6 +125,23 @@ data LocalDate = LocalDate
  , getMonth :: Int
  , getDayOfMonth :: Int
  } deriving (Eq, Ord, Show)
+
+-- | Creates a local date from year, month, day. Errors if date is invalid.
+localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
+localDateOf year month day = if monthIsInvalid || dayIsInvalid
+  then fail errMsg
+  else pure $ LocalDate year month day
+ where
+  monthIsInvalid = month < 1 || month > 12
+  dayIsInvalid =
+    day < 1 || day > getDaysInMonth (isLeapYear year) (toEnum month)
+  errMsg =
+    "Invalid date: year="
+      ++ show year
+      ++ ", month="
+      ++ show month
+      ++ ", dayOfMonth="
+      ++ show day
 
 -- | The day count since epoch, where day 0 is 1970-01-01.
 toEpochDay :: LocalDate -> Integer
