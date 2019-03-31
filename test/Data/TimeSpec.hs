@@ -141,7 +141,7 @@ localDateSpec :: Spec
 localDateSpec =
   describe "LocalDate" $ do
     describe "compare" localDateCompareSpec
-    describe "toEpochDay" toEpochDaySpec
+    describe "getEpochDay" getEpochDaySpec
     describe "localDateOf" localDateOfSpec
 
 localDateValid :: Integer -> Int -> Int -> LocalDate
@@ -162,8 +162,8 @@ localDateCompareSpec =
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
 
-toEpochDaySpec :: Spec
-toEpochDaySpec =
+getEpochDaySpec :: Spec
+getEpochDaySpec =
   mapM_
     test
     [ (localDateValid 1970 1 1, 0)
@@ -207,7 +207,7 @@ toEpochDaySpec =
     ]
   where
     test arg@(localDate, epochDay) =
-      it (show arg) $ toEpochDay localDate `shouldBe` epochDay
+      it (show arg) $ getEpochDay localDate `shouldBe` epochDay
 
 localDateOfSpec :: Spec
 localDateOfSpec =

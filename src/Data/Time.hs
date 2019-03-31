@@ -15,8 +15,8 @@ module Data.Time
   , getYear
   , getMonth
   , getDayOfMonth
+  , getEpochDay
   , localDateOf
-  , toEpochDay
   ) where
 
 import Control.Monad.Fail
@@ -175,9 +175,9 @@ localDateOf year month day =
       show year ++ ", month=" ++ show month ++ ", dayOfMonth=" ++ show day
 
 -- | The day count since epoch, where day 0 is 1970-01-01.
-toEpochDay :: LocalDate -> Integer
-toEpochDay (LocalDate y month day)
-  -- Ported from java.time.LocalDate.toEpochDay
+getEpochDay :: LocalDate -> Integer
+getEpochDay (LocalDate y month day)
+  -- Ported from java.time.LocalDate.getEpochDay
  =
   365 * y +
   (if y >= 0
