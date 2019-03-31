@@ -16,49 +16,49 @@ instantSpec :: Spec
 instantSpec =
   describe "Instant" $ do
     describe "compare" instantCompareSpec
-    describe "fromEpocMilli" fromEpochMilliSpec
-    describe "toEpochMilli" toEpochMilliSpec
+    describe "instantOfEpocMilli" instantOfEpochMilliSpec
+    describe "getEpochMilli" getEpochMilliSpec
 
 instantCompareSpec :: Spec
 instantCompareSpec =
   mapM_
     test
-    [ (EQ, fromEpochSecond 1 2, fromEpochSecond 1 2)
-    , (LT, fromEpochSecond 1 2, fromEpochSecond 1 3)
-    , (LT, fromEpochSecond 1 2, fromEpochSecond 2 2)
-    , (GT, fromEpochSecond 1 3, fromEpochSecond 1 2)
-    , (GT, fromEpochSecond 2 2, fromEpochSecond 1 2)
+    [ (EQ, instantOfEpochSecond 1 2, instantOfEpochSecond 1 2)
+    , (LT, instantOfEpochSecond 1 2, instantOfEpochSecond 1 3)
+    , (LT, instantOfEpochSecond 1 2, instantOfEpochSecond 2 2)
+    , (GT, instantOfEpochSecond 1 3, instantOfEpochSecond 1 2)
+    , (GT, instantOfEpochSecond 2 2, instantOfEpochSecond 1 2)
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
 
-fromEpochMilliSpec :: Spec
-fromEpochMilliSpec = do
+instantOfEpochMilliSpec :: Spec
+instantOfEpochMilliSpec = do
   mapM_
     test
     [ (0, epoch)
-    , (1, fromEpochSecond 0 1000000)
-    , (123456, fromEpochSecond 123 456000000)
-    , (-1, fromEpochSecond (-1) 999000000)
-    , (-10200, fromEpochSecond (-11) 800000000)
+    , (1, instantOfEpochSecond 0 1000000)
+    , (123456, instantOfEpochSecond 123 456000000)
+    , (-1, instantOfEpochSecond (-1) 999000000)
+    , (-10200, instantOfEpochSecond (-11) 800000000)
     ]
   where
     test arg@(milli, instant) =
-      it (show arg) $ fromEpochMilli milli `shouldBe` instant
+      it (show arg) $ instantOfEpochMilli milli `shouldBe` instant
 
-toEpochMilliSpec :: Spec
-toEpochMilliSpec = do
+getEpochMilliSpec :: Spec
+getEpochMilliSpec = do
   mapM_
     test
-    [ (fromEpochSecond 0 0, 0)
-    , (fromEpochSecond 1 2, 1000)
-    , (fromEpochSecond 11 200000000, 11200)
-    , (fromEpochSecond (-1) 2, -1000)
-    , (fromEpochSecond (-1) 200000000, -800)
+    [ (instantOfEpochSecond 0 0, 0)
+    , (instantOfEpochSecond 1 2, 1000)
+    , (instantOfEpochSecond 11 200000000, 11200)
+    , (instantOfEpochSecond (-1) 2, -1000)
+    , (instantOfEpochSecond (-1) 200000000, -800)
     ]
   where
     test arg@(instant, milli) =
-      it (show arg) $ toEpochMilli instant `shouldBe` milli
+      it (show arg) $ getEpochMilli instant `shouldBe` milli
 
 yearSpec :: Spec
 yearSpec =

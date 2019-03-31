@@ -1,11 +1,11 @@
 module Data.Time
   ( Instant
-  , getEpochSecond
-  , getNanoOfSecond
   , epoch
-  , fromEpochSecond
-  , fromEpochMilli
-  , toEpochMilli
+  , instantOfEpochSecond
+  , instantOfEpochMilli
+  , getEpochSecond
+  , getEpochMilli
+  , getNanoOfSecond
   , isLeapYear
   , getDaysInYear
   , Month(..)
@@ -34,23 +34,23 @@ getEpochSecond (Instant s _) = s
 getNanoOfSecond :: Instant -> Int
 getNanoOfSecond (Instant _ n) = n
 
+-- | Converts an instant to the millisecond since 'epoch'.
+getEpochMilli :: Instant -> Integer
+getEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)
+
 -- | 1970-01-01T00:00:00Z
 epoch :: Instant
 epoch = Instant 0 0
 
-fromEpochSecond :: Integer -> Int -> Instant
-fromEpochSecond = Instant -- TODO
+instantOfEpochSecond :: Integer -> Int -> Instant
+instantOfEpochSecond = Instant -- TODO
 
 -- | Converts a millisecond from 'epoch' to an instant.
-fromEpochMilli :: Integer -> Instant
-fromEpochMilli ms = Instant sec ns
+instantOfEpochMilli :: Integer -> Instant
+instantOfEpochMilli ms = Instant sec ns
   where
     sec = ms `div` 1000
     ns = fromIntegral (ms - sec * 1000) * 1000000
-
--- | Converts an instant to the millisecond since 'epoch'.
-toEpochMilli :: Instant -> Integer
-toEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)
 
 -- | A year is a leap year if it is divisible by 4
 -- but not divisible by 100 unless it's divisible by 400.
