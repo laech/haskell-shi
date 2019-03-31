@@ -1,6 +1,7 @@
 module Data.TimeSpec where
 
 import Data.List (sort)
+import Data.Maybe
 import Data.Time
 import Test.Hspec
 
@@ -143,17 +144,20 @@ localDateSpec =
     describe "toEpochDay" toEpochDaySpec
     describe "localDateOf" localDateOfSpec
 
+localDateValid :: Integer -> Int -> Int -> LocalDate
+localDateValid y m d = fromJust $ localDateOf y m d
+
 localDateCompareSpec :: Spec
 localDateCompareSpec =
   mapM_
     test
-    [ (EQ, LocalDate 1 2 3, LocalDate 1 2 3)
-    , (LT, LocalDate 1 2 3, LocalDate 2 2 3)
-    , (LT, LocalDate 1 2 3, LocalDate 1 3 3)
-    , (LT, LocalDate 1 2 3, LocalDate 1 2 4)
-    , (GT, LocalDate 2 2 3, LocalDate 1 2 3)
-    , (GT, LocalDate 1 3 3, LocalDate 1 2 3)
-    , (GT, LocalDate 1 2 4, LocalDate 1 2 3)
+    [ (EQ, localDateValid 1 2 3, localDateValid 1 2 3)
+    , (LT, localDateValid 1 2 3, localDateValid 2 2 3)
+    , (LT, localDateValid 1 2 3, localDateValid 1 3 3)
+    , (LT, localDateValid 1 2 3, localDateValid 1 2 4)
+    , (GT, localDateValid 2 2 3, localDateValid 1 2 3)
+    , (GT, localDateValid 1 3 3, localDateValid 1 2 3)
+    , (GT, localDateValid 1 2 4, localDateValid 1 2 3)
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
@@ -162,44 +166,44 @@ toEpochDaySpec :: Spec
 toEpochDaySpec =
   mapM_
     test
-    [ (LocalDate 1970 1 1, 0)
-    , (LocalDate 1970 1 2, 1)
-    , (LocalDate 1970 1 3, 2)
-    , (LocalDate 1970 12 31, 364)
-    , (LocalDate 1971 1 1, 365)
-    , (LocalDate 2004 2 29, 12477)
-    , (LocalDate 2019 3 17, 17972)
-    , (LocalDate 999999999 12 31, 365241780471)
-    , (LocalDate 74556927 9 2, 27230639126)
-    , (LocalDate 941048034 12 12, 343710017376)
-    , (LocalDate 56483748 1 8, 20629545808)
-    , (LocalDate 243946412 7 19, 89098878057)
-    , (LocalDate 78675278 5 11, 28734835828)
-    , (LocalDate 32078367 12 25, 11715663789)
-    , (LocalDate 463697857 4 1, 169361445098)
-    , (LocalDate 443805972 8 24, 162096083436)
-    , (LocalDate 470418915 7 16, 171816261230)
-    , (LocalDate 897678790 5 23, 327869726071)
-    , (LocalDate 162193233 1 15, 59239142391)
-    , (LocalDate 534365546 5 28, 195172288554)
-    , (LocalDate 1969 12 31, -1)
-    , (LocalDate 1969 12 30, -2)
-    , (LocalDate 1969 1 1, -365)
-    , (LocalDate 1960 2 29, -3594)
-    , (LocalDate 0 1 1, -719528)
-    , (LocalDate 0 12 31, -719163)
-    , (LocalDate (-400) 12 31, -865260)
-    , (LocalDate (-1) 12 31, -719529)
-    , (LocalDate (-1) 1 1, -719893)
-    , (LocalDate (-999999999) 1 1, -365243219162)
-    , (LocalDate (-44758093) 11 19, -16348276989)
-    , (LocalDate (-302472524) 10 20, -110476540082)
-    , (LocalDate (-984111839) 12 8, -359440187542)
-    , (LocalDate (-750556618) 8 8, -274135894858)
-    , (LocalDate (-882146331) 9 3, -322198050582)
-    , (LocalDate (-785520990) 2 4, -286906369684)
-    , (LocalDate (-26911170) 6 23, -9829822363)
-    , (LocalDate (-296189792) 6 13, -108181819469)
+    [ (localDateValid 1970 1 1, 0)
+    , (localDateValid 1970 1 2, 1)
+    , (localDateValid 1970 1 3, 2)
+    , (localDateValid 1970 12 31, 364)
+    , (localDateValid 1971 1 1, 365)
+    , (localDateValid 2004 2 29, 12477)
+    , (localDateValid 2019 3 17, 17972)
+    , (localDateValid 999999999 12 31, 365241780471)
+    , (localDateValid 74556927 9 2, 27230639126)
+    , (localDateValid 941048034 12 12, 343710017376)
+    , (localDateValid 56483748 1 8, 20629545808)
+    , (localDateValid 243946412 7 19, 89098878057)
+    , (localDateValid 78675278 5 11, 28734835828)
+    , (localDateValid 32078367 12 25, 11715663789)
+    , (localDateValid 463697857 4 1, 169361445098)
+    , (localDateValid 443805972 8 24, 162096083436)
+    , (localDateValid 470418915 7 16, 171816261230)
+    , (localDateValid 897678790 5 23, 327869726071)
+    , (localDateValid 162193233 1 15, 59239142391)
+    , (localDateValid 534365546 5 28, 195172288554)
+    , (localDateValid 1969 12 31, -1)
+    , (localDateValid 1969 12 30, -2)
+    , (localDateValid 1969 1 1, -365)
+    , (localDateValid 1960 2 29, -3594)
+    , (localDateValid 0 1 1, -719528)
+    , (localDateValid 0 12 31, -719163)
+    , (localDateValid (-400) 12 31, -865260)
+    , (localDateValid (-1) 12 31, -719529)
+    , (localDateValid (-1) 1 1, -719893)
+    , (localDateValid (-999999999) 1 1, -365243219162)
+    , (localDateValid (-44758093) 11 19, -16348276989)
+    , (localDateValid (-302472524) 10 20, -110476540082)
+    , (localDateValid (-984111839) 12 8, -359440187542)
+    , (localDateValid (-750556618) 8 8, -274135894858)
+    , (localDateValid (-882146331) 9 3, -322198050582)
+    , (localDateValid (-785520990) 2 4, -286906369684)
+    , (localDateValid (-26911170) 6 23, -9829822363)
+    , (localDateValid (-296189792) 6 13, -108181819469)
     ]
   where
     test arg@(localDate, epochDay) =
@@ -215,10 +219,10 @@ localDateOfSpec =
     , (2000, 1, 90, Nothing)
     , (2011, -1, 1, Nothing)
     , (2018, 1, -3, Nothing)
-    , (1970, 1, 1, Just (LocalDate 1970 1 1))
-    , (2000, 2, 29, Just (LocalDate 2000 2 29))
-    , (-1, 1, 31, Just (LocalDate (-1) 1 31))
-    , (99999, 12, 31, Just (LocalDate 99999 12 31))
+    , (1970, 1, 1, Just (localDateValid 1970 1 1))
+    , (2000, 2, 29, Just (localDateValid 2000 2 29))
+    , (-1, 1, 31, Just (localDateValid (-1) 1 31))
+    , (99999, 12, 31, Just (localDateValid 99999 12 31))
     ]
   where
     test arg@(y, m, d, expected) =

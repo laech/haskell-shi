@@ -8,7 +8,10 @@ module Data.Time
   , Month(..)
   , monthOf
   , getDaysInMonth
-  , LocalDate(..)
+  , LocalDate
+  , getYear
+  , getMonth
+  , getDayOfMonth
   , localDateOf
   , toEpochDay
   ) where
@@ -130,11 +133,20 @@ getDaysInMonth _ month =
     December -> 31
 
 -- | A date without time zone.
-data LocalDate = LocalDate
-  { getYear :: Integer
-  , getMonth :: Int
-  , getDayOfMonth :: Int
-  } deriving (Eq, Ord, Show)
+data LocalDate =
+  LocalDate Integer
+            Int
+            Int
+  deriving (Eq, Ord, Show)
+
+getYear :: LocalDate -> Integer
+getYear (LocalDate y _ _) = y
+
+getMonth :: LocalDate -> Int
+getMonth (LocalDate _ m _) = m
+
+getDayOfMonth :: LocalDate -> Int
+getDayOfMonth (LocalDate _ _ d) = d
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
