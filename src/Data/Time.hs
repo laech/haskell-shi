@@ -1,6 +1,9 @@
 module Data.Time
-  ( Instant(..)
+  ( Instant
+  , getEpochSecond
+  , getNanoOfSecond
   , epoch
+  , fromEpochSecond
   , fromEpochMilli
   , toEpochMilli
   , isLeapYear
@@ -20,14 +23,23 @@ import Control.Monad.Fail
 import Data.Maybe
 import Prelude hiding (fail)
 
-data Instant = Instant
-  { getEpochSecond :: Integer
-  , getNano :: Int
-  } deriving (Eq, Ord, Show)
+data Instant =
+  Instant Integer
+          Int
+  deriving (Eq, Ord, Show)
+
+getEpochSecond :: Instant -> Integer
+getEpochSecond (Instant s _) = s
+
+getNanoOfSecond :: Instant -> Int
+getNanoOfSecond (Instant _ n) = n
 
 -- | 1970-01-01T00:00:00Z
 epoch :: Instant
 epoch = Instant 0 0
+
+fromEpochSecond :: Integer -> Int -> Instant
+fromEpochSecond = Instant -- TODO
 
 -- | Converts a millisecond from 'epoch' to an instant.
 fromEpochMilli :: Integer -> Instant

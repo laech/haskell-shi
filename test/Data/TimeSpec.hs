@@ -23,11 +23,11 @@ instantCompareSpec :: Spec
 instantCompareSpec =
   mapM_
     test
-    [ (EQ, Instant 1 2, Instant 1 2)
-    , (LT, Instant 1 2, Instant 1 3)
-    , (LT, Instant 1 2, Instant 2 2)
-    , (GT, Instant 1 3, Instant 1 2)
-    , (GT, Instant 2 2, Instant 1 2)
+    [ (EQ, fromEpochSecond 1 2, fromEpochSecond 1 2)
+    , (LT, fromEpochSecond 1 2, fromEpochSecond 1 3)
+    , (LT, fromEpochSecond 1 2, fromEpochSecond 2 2)
+    , (GT, fromEpochSecond 1 3, fromEpochSecond 1 2)
+    , (GT, fromEpochSecond 2 2, fromEpochSecond 1 2)
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
@@ -37,10 +37,10 @@ fromEpochMilliSpec = do
   mapM_
     test
     [ (0, epoch)
-    , (1, Instant 0 1000000)
-    , (123456, Instant 123 456000000)
-    , (-1, Instant (-1) 999000000)
-    , (-10200, Instant (-11) 800000000)
+    , (1, fromEpochSecond 0 1000000)
+    , (123456, fromEpochSecond 123 456000000)
+    , (-1, fromEpochSecond (-1) 999000000)
+    , (-10200, fromEpochSecond (-11) 800000000)
     ]
   where
     test arg@(milli, instant) =
@@ -50,11 +50,11 @@ toEpochMilliSpec :: Spec
 toEpochMilliSpec = do
   mapM_
     test
-    [ (Instant 0 0, 0)
-    , (Instant 1 2, 1000)
-    , (Instant 11 200000000, 11200)
-    , (Instant (-1) 2, -1000)
-    , (Instant (-1) 200000000, -800)
+    [ (fromEpochSecond 0 0, 0)
+    , (fromEpochSecond 1 2, 1000)
+    , (fromEpochSecond 11 200000000, 11200)
+    , (fromEpochSecond (-1) 2, -1000)
+    , (fromEpochSecond (-1) 200000000, -800)
     ]
   where
     test arg@(instant, milli) =
