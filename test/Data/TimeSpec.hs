@@ -33,7 +33,7 @@ instantCompareSpec =
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
 
 instantOfEpochMilliSpec :: Spec
-instantOfEpochMilliSpec = do
+instantOfEpochMilliSpec =
   mapM_
     test
     [ (0, epoch)
@@ -47,7 +47,7 @@ instantOfEpochMilliSpec = do
       it (show arg) $ instantOfEpochMilli milli `shouldBe` instant
 
 getEpochMilliSpec :: Spec
-getEpochMilliSpec = do
+getEpochMilliSpec =
   mapM_
     test
     [ (instantOfEpochSecond 0 0, 0)
@@ -226,4 +226,4 @@ localDateOfSpec =
     ]
   where
     test arg@(y, m, d, expected) =
-      it (show arg) $ (localDateOf y m d) `shouldBe` expected
+      it (show arg) $ localDateOf y m d `shouldBe` expected
