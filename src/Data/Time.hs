@@ -21,18 +21,19 @@ module Data.Time
 
 import Control.Monad.Fail
 import Data.Maybe
+import Data.Word
 import Prelude hiding (fail)
 
 data Instant =
   Instant Integer
-          Int
+          Word32
   deriving (Eq, Ord, Show)
 
 getEpochSecond :: Instant -> Integer
 getEpochSecond (Instant s _) = s
 
 getNanoOfSecond :: Instant -> Int
-getNanoOfSecond (Instant _ n) = n
+getNanoOfSecond (Instant _ n) = fromIntegral n
 
 -- | Converts an instant to the millisecond since 'epoch'.
 getEpochMilli :: Instant -> Integer
@@ -43,7 +44,7 @@ epoch :: Instant
 epoch = Instant 0 0
 
 instantOfEpochSecond :: Integer -> Int -> Instant
-instantOfEpochSecond = Instant -- TODO
+instantOfEpochSecond second nano = Instant second (fromIntegral nano) -- TODO
 
 -- | Converts a millisecond from 'epoch' to an instant.
 instantOfEpochMilli :: Integer -> Instant
@@ -147,25 +148,25 @@ getDaysInMonth _ month =
 -- | A date without time zone.
 data LocalDate =
   LocalDate Integer
-            Int
-            Int
+            Word8
+            Word8
   deriving (Eq, Ord, Show)
 
 getYear :: LocalDate -> Integer
 getYear (LocalDate y _ _) = y
 
 getMonth :: LocalDate -> Int
-getMonth (LocalDate _ m _) = m
+getMonth (LocalDate _ m _) = fromIntegral m
 
 getDayOfMonth :: LocalDate -> Int
-getDayOfMonth (LocalDate _ _ d) = d
+getDayOfMonth (LocalDate _ _ d) = fromIntegral d
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
 localDateOf year month day =
   if monthIsInvalid || dayIsInvalid
     then fail errMsg
-    else pure $ LocalDate year month day
+    else pure $ LocalDate year (fromIntegral month) (fromIntegral day)
   where
     monthIsInvalid = month < 1 || month > 12
     dayIsInvalid =
@@ -183,8 +184,8 @@ getEpochDay (LocalDate y month day)
   (if y >= 0
      then (y + 3) `div` 4 - (y + 99) `div` 100 + (y + 399) `div` 400
      else -(y `div` (-4) - y `div` (-100) + y `div` (-400))) +
-  fromIntegral ((367 * month - 362) `div` 12) +
-  fromIntegral (day - 1) +
+  ((367 * fromIntegral month - 362) `div` 12) +
+  (fromIntegral day - 1) +
   (if month <= 2
      then 0
      else if isLeapYear y
