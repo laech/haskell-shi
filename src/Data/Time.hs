@@ -1,11 +1,11 @@
 module Data.Time
-  ( Instant
+  ( HasNanoOfSecond(..)
+  , Instant
   , epoch
   , instantOfEpochSecond
   , instantOfEpochMilli
   , getEpochSecond
   , getEpochMilli
-  , getNanoOfSecond
   , isLeapYear
   , getDaysInYear
   , Month(..)
@@ -17,12 +17,20 @@ module Data.Time
   , getDayOfMonth
   , getEpochDay
   , localDateOf
+  , LocalTime
+  , getHour
+  , getMinute
+  , getSecond
+  , localTimeOf
   ) where
 
 import Control.Monad.Fail
 import Data.Maybe
 import Data.Word
 import Prelude hiding (fail)
+
+class HasNanoOfSecond a where
+  getNanoOfSecond :: a -> Int
 
 data Instant =
   Instant Integer
@@ -32,8 +40,8 @@ data Instant =
 getEpochSecond :: Instant -> Integer
 getEpochSecond (Instant s _) = s
 
-getNanoOfSecond :: Instant -> Int
-getNanoOfSecond (Instant _ n) = fromIntegral n
+instance HasNanoOfSecond Instant where
+  getNanoOfSecond (Instant _ n) = fromIntegral n
 
 -- | Converts an instant to the millisecond since 'epoch'.
 getEpochMilli :: Instant -> Integer
@@ -194,3 +202,42 @@ getEpochDay (LocalDate y month day)
   numDaysFromYear0To1970
   where
     numDaysFromYear0To1970 = 719528
+
+data LocalTime =
+  LocalTime Word8
+            Word8
+            Word8
+            Word32
+  deriving (Eq, Ord, Show)
+
+getHour :: LocalTime -> Int
+getHour (LocalTime h _ _ _) = fromIntegral h
+
+getMinute :: LocalTime -> Int
+getMinute (LocalTime _ m _ _) = fromIntegral m
+
+getSecond :: LocalTime -> Int
+getSecond (LocalTime _ _ s _) = fromIntegral s
+
+instance HasNanoOfSecond LocalTime where
+  getNanoOfSecond (LocalTime _ _ _ n) = fromIntegral n
+
+localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
+localTimeOf hour minute second nano =
+  if hourIsInvalid || minuteIsInvalid || secondIsInvalid || nanoIsInvalid
+    then fail $
+         "Invalid time: hour=" ++
+         show hour ++
+         ", minute=" ++
+         show minute ++ ", second=" ++ show second ++ ", nano=" ++ show nano
+    else pure $
+         LocalTime
+           (fromIntegral hour)
+           (fromIntegral minute)
+           (fromIntegral second)
+           (fromIntegral nano)
+  where
+    hourIsInvalid = hour < 0 || hour > 23
+    minuteIsInvalid = minute < 0 || minute > 59
+    secondIsInvalid = second < 0 || second > 59
+    nanoIsInvalid = nano < 0 || nano > 999999999

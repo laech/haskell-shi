@@ -11,6 +11,7 @@ spec = do
   yearSpec
   monthSpec
   localDateSpec
+  localTimeSpec
 
 instantSpec :: Spec
 instantSpec =
@@ -227,3 +228,32 @@ localDateOfSpec =
   where
     test arg@(y, m, d, expected) =
       it (show arg) $ localDateOf y m d `shouldBe` expected
+
+localTimeValid :: Int -> Int -> Int -> Int -> LocalTime
+localTimeValid h m s n = fromJust $ localTimeOf h m s n
+
+localTimeSpec :: Spec
+localTimeSpec = describe "LocalTime" $ describe "localTimeOf" localTimeOfSpec
+
+localTimeOfSpec :: Spec
+localTimeOfSpec =
+  mapM_
+    test
+    [ (-1, 0, 0, 0, Nothing)
+    , (0, -1, 0, 0, Nothing)
+    , (0, 0, -1, 0, Nothing)
+    , (0, 0, 0, -1, Nothing)
+    , (24, 0, 0, 0, Nothing)
+    , (0, 60, 0, 0, Nothing)
+    , (0, 0, 60, 0, Nothing)
+    , (0, 0, 0, 1000000000, Nothing)
+    , (0, 0, 0, 0, Just (localTimeValid 0 0 0 0))
+    , (23, 0, 0, 0, Just (localTimeValid 23 0 0 0))
+    , (0, 59, 0, 0, Just (localTimeValid 0 59 0 0))
+    , (0, 0, 59, 0, Just (localTimeValid 0 0 59 0))
+    , (0, 0, 0, 999999999, Just (localTimeValid 0 0 0 999999999))
+    , (1, 2, 3, 4, Just (localTimeValid 1 2 3 4))
+    ]
+  where
+    test arg@(h, m, s, n, expected) =
+      it (show arg) $ localTimeOf h m s n `shouldBe` expected
