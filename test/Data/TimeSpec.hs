@@ -235,8 +235,26 @@ localTimeValid h m s n = fromJust $ localTimeOf h m s n
 localTimeSpec :: Spec
 localTimeSpec =
   describe "LocalTime" $ do
+    describe "compare" localTimeCompareSpec
     describe "localTimeOf" localTimeOfSpec
     describe "getSecondOfDay" getSecondOfDaySpec
+
+localTimeCompareSpec :: Spec
+localTimeCompareSpec =
+  mapM_
+    test
+    [ (EQ, localTimeValid 1 2 3 4, localTimeValid 1 2 3 4)
+    , (LT, localTimeValid 1 2 3 4, localTimeValid 2 2 3 4)
+    , (LT, localTimeValid 1 2 3 4, localTimeValid 1 3 3 4)
+    , (LT, localTimeValid 1 2 3 4, localTimeValid 1 2 4 4)
+    , (LT, localTimeValid 1 2 3 4, localTimeValid 1 2 3 5)
+    , (GT, localTimeValid 2 2 3 4, localTimeValid 1 2 3 4)
+    , (GT, localTimeValid 1 3 3 4, localTimeValid 1 2 3 4)
+    , (GT, localTimeValid 1 2 4 4, localTimeValid 1 2 3 4)
+    , (GT, localTimeValid 1 2 3 5, localTimeValid 1 2 3 4)
+    ]
+  where
+    test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
 
 localTimeOfSpec :: Spec
 localTimeOfSpec =
