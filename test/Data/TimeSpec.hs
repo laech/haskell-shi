@@ -233,7 +233,10 @@ localTimeValid :: Int -> Int -> Int -> Int -> LocalTime
 localTimeValid h m s n = fromJust $ localTimeOf h m s n
 
 localTimeSpec :: Spec
-localTimeSpec = describe "LocalTime" $ describe "localTimeOf" localTimeOfSpec
+localTimeSpec =
+  describe "LocalTime" $ do
+    describe "localTimeOf" localTimeOfSpec
+    describe "getSecondOfDay" getSecondOfDaySpec
 
 localTimeOfSpec :: Spec
 localTimeOfSpec =
@@ -257,3 +260,19 @@ localTimeOfSpec =
   where
     test arg@(h, m, s, n, expected) =
       it (show arg) $ localTimeOf h m s n `shouldBe` expected
+
+getSecondOfDaySpec :: Spec
+getSecondOfDaySpec =
+  mapM_
+    test
+    [ (0, 0, 0, 0, 0)
+    , (1, 0, 0, 0, 3600)
+    , (0, 1, 0, 0, 60)
+    , (0, 0, 1, 0, 1)
+    , (0, 0, 0, 1, 0)
+    , (1, 1, 1, 0, 3661)
+    ]
+  where
+    test arg@(h, m, s, n, expected) =
+      it (show arg) $
+      getSecondOfDay (localTimeValid h m s n) `shouldBe` expected

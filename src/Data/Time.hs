@@ -21,6 +21,7 @@ module Data.Time
   , getHour
   , getMinute
   , getSecond
+  , getSecondOfDay
   , localTimeOf
   ) where
 
@@ -221,6 +222,11 @@ getSecond (LocalTime _ _ s _) = fromIntegral s
 
 instance HasNanoOfSecond LocalTime where
   getNanoOfSecond (LocalTime _ _ _ n) = fromIntegral n
+
+-- | Get the the time as seconds since the start of the day.
+getSecondOfDay :: LocalTime -> Int
+getSecondOfDay time =
+  getHour time * 60 * 60 + getMinute time * 60 + getSecond time
 
 localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
 localTimeOf hour minute second nano =
