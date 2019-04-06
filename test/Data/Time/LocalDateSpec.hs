@@ -1,6 +1,5 @@
 module Data.Time.LocalDateSpec where
 
-import Data.List (sort)
 import Data.Maybe
 import Data.Time.LocalDate
 import Test.Hspec
