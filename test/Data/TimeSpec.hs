@@ -18,6 +18,7 @@ instantSpec =
   describe "Instant" $ do
     describe "compare" instantCompareSpec
     describe "instantOfEpocMilli" instantOfEpochMilliSpec
+    describe "getEpochSecond" instantGetEpochSecondSpec
     describe "getEpochMilli" getEpochMilliSpec
 
 instantCompareSpec :: Spec
@@ -46,6 +47,23 @@ instantOfEpochMilliSpec =
   where
     test arg@(milli, instant) =
       it (show arg) $ instantOfEpochMilli milli `shouldBe` instant
+
+instantGetEpochSecondSpec :: Spec
+instantGetEpochSecondSpec =
+  mapM_
+    test
+    [ (instantOfEpochMilli 0, 0)
+    , (instantOfEpochMilli 1000, 1)
+    , (instantOfEpochMilli 1001, 1)
+    , (instantOfEpochMilli 2000, 2)
+    , (instantOfEpochMilli (-1000), -1)
+    , (instantOfEpochSecond 1 0, 1)
+    , (instantOfEpochSecond 1 2, 1)
+    , (instantOfEpochSecond (-1) 2, -1)
+    ]
+  where
+    test arg@(instant, sec) =
+      it (show arg) $ getEpochSecond instant `shouldBe` sec
 
 getEpochMilliSpec :: Spec
 getEpochMilliSpec =
