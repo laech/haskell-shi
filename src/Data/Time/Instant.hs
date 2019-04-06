@@ -3,7 +3,6 @@ module Data.Time.Instant
   , epoch
   , instantOfEpochSecond
   , instantOfEpochMilli
-  , getEpochMilli
   , module Data.Time.Base
   ) where
 
@@ -15,16 +14,6 @@ data Instant =
   Instant Integer
           Word32
   deriving (Eq, Ord, Show)
-
-instance HasEpochSecond Instant where
-  getEpochSecond (Instant s _) = s
-
-instance HasNanoOfSecond Instant where
-  getNanoOfSecond (Instant _ n) = fromIntegral n
-
--- | Converts an instant to the millisecond since 'epoch'.
-getEpochMilli :: Instant -> Integer
-getEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)
 
 -- | 1970-01-01T00:00:00Z
 epoch :: Instant
@@ -39,3 +28,12 @@ instantOfEpochMilli ms = Instant sec ns
   where
     sec = ms `div` 1000
     ns = fromIntegral (ms - sec * 1000) * 1000000
+
+instance HasEpochSecond Instant where
+  getEpochSecond (Instant s _) = s
+
+instance HasNanoOfSecond Instant where
+  getNanoOfSecond (Instant _ n) = fromIntegral n
+
+instance HasEpochMilli Instant where
+  getEpochMilli (Instant sec ns) = sec * 1000 + fromIntegral (ns `div` 1000000)

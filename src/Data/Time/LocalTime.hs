@@ -1,9 +1,5 @@
 module Data.Time.LocalTime
   ( LocalTime
-  , getHour
-  , getMinute
-  , getSecond
-  , getSecondOfDay
   , localTimeOf
   , module Data.Time.Base
   ) where
@@ -19,23 +15,6 @@ data LocalTime =
             Word8
             Word32
   deriving (Eq, Ord, Show)
-
-getHour :: LocalTime -> Int
-getHour (LocalTime h _ _ _) = fromIntegral h
-
-getMinute :: LocalTime -> Int
-getMinute (LocalTime _ m _ _) = fromIntegral m
-
-getSecond :: LocalTime -> Int
-getSecond (LocalTime _ _ s _) = fromIntegral s
-
-instance HasNanoOfSecond LocalTime where
-  getNanoOfSecond (LocalTime _ _ _ n) = fromIntegral n
-
--- | Get the the time as seconds since the start of the day.
-getSecondOfDay :: LocalTime -> Int
-getSecondOfDay time =
-  getHour time * 60 * 60 + getMinute time * 60 + getSecond time
 
 localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
 localTimeOf hour minute second nano =
@@ -56,3 +35,19 @@ localTimeOf hour minute second nano =
     minuteIsInvalid = minute < 0 || minute > 59
     secondIsInvalid = second < 0 || second > 59
     nanoIsInvalid = nano < 0 || nano > 999999999
+
+instance HasHour LocalTime where
+  getHour (LocalTime h _ _ _) = fromIntegral h
+
+instance HasMinute LocalTime where
+  getMinute (LocalTime _ m _ _) = fromIntegral m
+
+instance HasSecond LocalTime where
+  getSecond (LocalTime _ _ s _) = fromIntegral s
+
+instance HasNanoOfSecond LocalTime where
+  getNanoOfSecond (LocalTime _ _ _ n) = fromIntegral n
+
+instance HasSecondOfDay LocalTime where
+  getSecondOfDay time =
+    getHour time * 60 * 60 + getMinute time * 60 + getSecond time
