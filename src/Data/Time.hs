@@ -1,10 +1,10 @@
 module Data.Time
-  ( HasNanoOfSecond(..)
+  ( HasEpochSecond(..)
+  , HasNanoOfSecond(..)
   , Instant
   , epoch
   , instantOfEpochSecond
   , instantOfEpochMilli
-  , getEpochSecond
   , getEpochMilli
   , isLeapYear
   , getDaysInYear
@@ -23,6 +23,7 @@ module Data.Time
   , getSecond
   , getSecondOfDay
   , localTimeOf
+  , LocalDateTime(..)
   ) where
 
 import Control.Monad.Fail
@@ -30,7 +31,14 @@ import Data.Maybe
 import Data.Word
 import Prelude hiding (fail)
 
+class HasEpochSecond a where
+  -- | Gets the time as number of seconds since epoch.
+  getEpochSecond :: a -> Integer
+
 class HasNanoOfSecond a where
+  -- | For a time value with nano second precision, return the number
+  -- of nano seconds (between 0 - 999,999,999) from the whole second
+  -- time value.
   getNanoOfSecond :: a -> Int
 
 data Instant =
@@ -38,8 +46,8 @@ data Instant =
           Word32
   deriving (Eq, Ord, Show)
 
-getEpochSecond :: Instant -> Integer
-getEpochSecond (Instant s _) = s
+instance HasEpochSecond Instant where
+  getEpochSecond (Instant s _) = s
 
 instance HasNanoOfSecond Instant where
   getNanoOfSecond (Instant _ n) = fromIntegral n
@@ -247,3 +255,18 @@ localTimeOf hour minute second nano =
     minuteIsInvalid = minute < 0 || minute > 59
     secondIsInvalid = second < 0 || second > 59
     nanoIsInvalid = nano < 0 || nano > 999999999
+
+-- | Date and time without time zone.
+data LocalDateTime =
+  LocalDateTime LocalDate
+                LocalTime
+  deriving (Eq, Ord, Show)
+
+instance HasEpochSecond LocalDateTime where
+  getEpochSecond (LocalDateTime date time) =
+    getEpochDay date * secondsPerDay + fromIntegral (getSecondOfDay time)
+    where
+      secondsPerDay = 24 * 60 * 60
+
+instance HasNanoOfSecond LocalDateTime where
+  getNanoOfSecond (LocalDateTime _ time) = getNanoOfSecond time
