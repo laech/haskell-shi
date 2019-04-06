@@ -5,6 +5,7 @@ module Data.Time.Month
   ) where
 
 import Control.Monad.Fail
+import Data.Maybe
 import Prelude hiding (fail)
 
 data Month

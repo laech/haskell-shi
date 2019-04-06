@@ -1,7 +1,5 @@
 module Data.Time.InstantSpec where
 
-import Data.List (sort)
-import Data.Maybe
 import Data.Time.Instant
 import Test.Hspec
 

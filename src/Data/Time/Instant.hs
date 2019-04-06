@@ -4,9 +4,9 @@ module Data.Time.Instant
   , instantOfEpochSecond
   , instantOfEpochMilli
   , getEpochMilli
+  , module Data.Time.Base
   ) where
 
-import Control.Monad.Fail
 import Data.Time.Base
 import Data.Word
 import Prelude hiding (fail)

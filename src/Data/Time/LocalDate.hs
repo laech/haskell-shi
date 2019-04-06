@@ -8,7 +8,8 @@ module Data.Time.LocalDate
   ) where
 
 import Control.Monad.Fail
-import Data.Time.Base
+import Data.Time.Month
+import Data.Time.Year
 import Data.Word
 import Prelude hiding (fail)
 

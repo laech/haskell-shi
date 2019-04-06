@@ -1,8 +1,11 @@
 module Data.Time.LocalDateTime
   ( LocalDateTime(..)
+  , module Data.Time.Base
   ) where
 
 import Data.Time.Base
+import Data.Time.LocalDate
+import Data.Time.LocalTime
 
 -- | Date and time without time zone.
 data LocalDateTime =

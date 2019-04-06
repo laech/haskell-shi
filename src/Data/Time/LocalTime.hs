@@ -5,6 +5,7 @@ module Data.Time.LocalTime
   , getSecond
   , getSecondOfDay
   , localTimeOf
+  , module Data.Time.Base
   ) where
 
 import Control.Monad.Fail

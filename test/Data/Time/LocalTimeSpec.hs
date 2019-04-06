@@ -1,6 +1,5 @@
 module Data.Time.LocalTimeSpec where
 
-import Data.List (sort)
 import Data.Maybe
 import Data.Time.LocalTime
 import Test.Hspec
@@ -11,6 +10,9 @@ spec =
     describe "compare" localTimeCompareSpec
     describe "localTimeOf" localTimeOfSpec
     describe "getSecondOfDay" getSecondOfDaySpec
+
+localTimeValid :: Int -> Int -> Int -> Int -> LocalTime
+localTimeValid h m s n = fromJust (localTimeOf h m s n)
 
 localTimeCompareSpec :: Spec
 localTimeCompareSpec =
