@@ -1,4 +1,4 @@
-module Data.Time
+module Data.Time.Base
   ( HasEpochSecond(..)
   , HasNanoOfSecond(..)
   ) where
