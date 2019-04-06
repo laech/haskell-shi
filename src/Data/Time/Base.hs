@@ -37,7 +37,7 @@ class HasNanoOfSecond a where
   getNanoOfSecond :: a -> Int
 
 class HasSecondOfDay a where
-  -- | Get the the time as seconds since the start of the day.
+  -- | The second since the start of the day.
   getSecondOfDay :: a -> Int
 
 class HasEpochDay a where
@@ -45,9 +45,9 @@ class HasEpochDay a where
   getEpochDay :: a -> Integer
 
 class HasEpochSecond a where
-  -- | Gets the time as number of seconds since epoch 1970-01-01T00:00:00Z.
+  -- | The second since epoch 1970-01-01T00:00:00Z.
   getEpochSecond :: a -> Integer
 
 class HasEpochMilli a where
-  -- | Gets the time as number of milliseconds since epoch 1970-01-01T00:00:00Z.
+  -- | The millisecond since epoch 1970-01-01T00:00:00Z.
   getEpochMilli :: a -> Integer
