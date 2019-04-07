@@ -18,9 +18,6 @@ spec =
     describe "getSecond" getSecondSpec
     describe "getNanoOfSecond" getNanoOfSecondSpec
     describe "getSecondOfDay" getSecondOfDaySpec
-    describe "getEpochDay" getEpochDaySpec
-    describe "getEpochSecond" getEpochSecondSpec
-    describe "getEpochMilli" getEpochMilliSpec
 
 localDateTimeValid ::
      Integer -> Int -> Int -> Int -> Int -> Int -> Int -> LocalDateTime
@@ -151,48 +148,3 @@ getSecondOfDaySpec =
   where
     test arg@(datetime, second) =
       it (show arg) $ getSecondOfDay datetime `shouldBe` second
-
-getEpochDaySpec :: Spec
-getEpochDaySpec =
-  mapM_
-    test
-    [ (localDateTimeValid 1970 1 1 0 0 0 0, 0)
-    , (localDateTimeValid 1970 1 1 9 9 9 9, 0)
-    , (localDateTimeValid 1970 1 2 0 0 0 0, 1)
-    , (localDateTimeValid 1970 1 2 9 9 9 9, 1)
-    , (localDateTimeValid 1969 12 31 0 0 0 0, -1)
-    , (localDateTimeValid 1969 12 31 9 9 9 9, -1)
-    ]
-  where
-    test arg@(datetime, day) =
-      it (show arg) $ getEpochDay datetime `shouldBe` day
-
-getEpochSecondSpec :: Spec
-getEpochSecondSpec =
-  mapM_
-    test
-    [ (localDateTimeValid 1970 1 1 0 0 0 0, 0)
-    , (localDateTimeValid 1970 1 1 0 0 0 9, 0)
-    , (localDateTimeValid 1970 1 1 0 0 1 0, 1)
-    , (localDateTimeValid 1970 1 1 0 0 1 9, 1)
-    , (localDateTimeValid 1969 12 31 23 59 59 0, -1)
-    , (localDateTimeValid 1969 12 31 23 59 59 9, -1)
-    ]
-  where
-    test arg@(datetime, second) =
-      it (show arg) $ getEpochSecond datetime `shouldBe` second
-
-getEpochMilliSpec :: Spec
-getEpochMilliSpec =
-  mapM_
-    test
-    [ (localDateTimeValid 1970 1 1 0 0 0 0, 0)
-    , (localDateTimeValid 1970 1 1 0 0 0 999999, 0)
-    , (localDateTimeValid 1970 1 1 0 0 0 1000000, 1)
-    , (localDateTimeValid 1970 1 1 0 0 0 1999999, 1)
-    , (localDateTimeValid 1969 12 31 23 59 59 999999999, -1)
-    , (localDateTimeValid 1969 12 31 23 59 59 999000000, -1)
-    ]
-  where
-    test arg@(datetime, milli) =
-      it (show arg) $ getEpochMilli datetime `shouldBe` milli
