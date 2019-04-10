@@ -11,6 +11,7 @@ spec =
     monthOfSpec
     monthSortSpec
     describe "getDaysInMonth" getDaysInMonthSpec
+    describe "getFirstDayOfYear" getFirstDayOfYearSpec
 
 -- | Months in the order we expect
 months :: [Month]
@@ -62,3 +63,20 @@ getDaysInMonthSpec = do
     expectDaysInMonth month daysInNonLeapYear daysInLeapYear =
       [getDaysInMonth False month, getDaysInMonth True month] `shouldBe`
       [daysInNonLeapYear, daysInLeapYear]
+
+getFirstDayOfYearSpec :: Spec
+getFirstDayOfYearSpec =
+  mapM_
+    test
+    (zip3
+       months
+       (repeat True)
+       [1, 32, 61, 92, 122, 153, 183, 214, 245, 275, 306, 336] ++
+     zip3
+       months
+       (repeat False)
+       [1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335])
+  where
+    test arg@(month, isLeapYear, firstDayOfYear) =
+      it (show arg) $
+      getFirstDayOfYear isLeapYear month `shouldBe` firstDayOfYear
