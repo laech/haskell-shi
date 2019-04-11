@@ -1,10 +1,12 @@
 module Data.Time.LocalDate
   ( LocalDate
   , localDateOf
+  , localDateOfEpochDay
   , module Data.Time.Base
   ) where
 
 import Control.Monad.Fail
+import Data.Maybe
 import Data.Time.Base
 import Data.Time.Month
 import Data.Time.Year
@@ -17,6 +19,34 @@ data LocalDate =
             Word8
             Word8
   deriving (Eq, Ord, Show)
+
+-- | Creates a local date from an epoch day, where day 0 is 1970-01-01.
+localDateOfEpochDay :: Integer -> LocalDate
+localDateOfEpochDay epochDay =
+  let days0000To1970 = 719528
+      days400Years = 146097
+      day0' = epochDay + days0000To1970 - 60
+      (day0, adjust) =
+        if day0' < 0
+          then let cycles = (day0' + 1) `div` days400Years - 1
+               in (day0' + (-cycles) * days400Years, cycles * 400)
+          else (day0', 0)
+      yearEst' = (400 * day0 + 591) `div` days400Years
+      doyEst' =
+        day0 -
+        (365 * yearEst' + yearEst' `div` 4 - yearEst' `div` 100 +
+         yearEst' `div` 400)
+      (yearEst, doyEst) =
+        if doyEst' >= 0
+          then (yearEst', doyEst')
+          else let y = yearEst' - 1
+               in (y, day0 - (365 * y + y `div` 4 - y `div` 100 + y `div` 400))
+      marchMonth0 = (doyEst * 5 + 2) `div` 153
+      month = (marchMonth0 + 2) `rem` 12 + 1
+      dom = doyEst - (marchMonth0 * 306 + 5) `div` 10 + 1
+      year = yearEst + adjust + marchMonth0 `div` 10
+  in fromJust (localDateOf year (fromIntegral month) (fromIntegral dom))
+  -- Ported from java.time.LocalDate.ofEpochDay
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
