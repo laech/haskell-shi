@@ -2,6 +2,7 @@ module Data.Time.Month
   ( Month(..)
   , monthOf
   , getDaysInMonth
+  , getFirstDayOfYear
   ) where
 
 import Control.Monad.Fail
@@ -66,11 +67,10 @@ monthOf i =
     12 -> pure December
     _ -> fail ("Invalid month: " ++ show i)
 
+type IsLeapYear = Bool
+
 -- | Gets the number of days in a month.
-getDaysInMonth ::
-     Bool -- ^ Is leap year?
-  -> Month
-  -> Int
+getDaysInMonth :: IsLeapYear -> Month -> Int
 getDaysInMonth True February = 29
 getDaysInMonth _ month =
   case month of
@@ -86,3 +86,25 @@ getDaysInMonth _ month =
     October -> 31
     November -> 30
     December -> 31
+
+-- | Gets the day of year that is the first day of a given month.
+getFirstDayOfYear :: IsLeapYear -> Month -> Int
+getFirstDayOfYear False month =
+  case month of
+    January -> 1
+    February -> 32
+    March -> 60
+    April -> 91
+    May -> 121
+    June -> 152
+    July -> 182
+    August -> 213
+    September -> 244
+    October -> 274
+    November -> 305
+    December -> 335
+getFirstDayOfYear True month =
+  let result = getFirstDayOfYear False month
+   in if month > February
+        then result + 1
+        else result
