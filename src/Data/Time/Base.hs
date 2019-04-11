@@ -2,6 +2,7 @@ module Data.Time.Base
   ( HasYear(..)
   , HasMonth(..)
   , HasDayOfMonth(..)
+  , HasDayOfYear(..)
   , HasHour(..)
   , HasMinute(..)
   , HasSecond(..)
@@ -20,6 +21,10 @@ class HasMonth a where
 
 class HasDayOfMonth a where
   getDayOfMonth :: a -> Int
+
+class HasDayOfYear a where
+  -- | The day of year, between 1 and 365 (or 366 for a leap year).
+  getDayOfYear :: a -> Int
 
 class HasHour a where
   getHour :: a -> Int

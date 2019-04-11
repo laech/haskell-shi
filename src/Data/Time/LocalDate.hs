@@ -29,7 +29,7 @@ localDateOfEpochDay epochDay =
       (day0, adjust) =
         if day0' < 0
           then let cycles = (day0' + 1) `div` days400Years - 1
-               in (day0' + (-cycles) * days400Years, cycles * 400)
+                in (day0' + (-cycles) * days400Years, cycles * 400)
           else (day0', 0)
       yearEst' = (400 * day0 + 591) `div` days400Years
       doyEst' =
@@ -40,12 +40,12 @@ localDateOfEpochDay epochDay =
         if doyEst' >= 0
           then (yearEst', doyEst')
           else let y = yearEst' - 1
-               in (y, day0 - (365 * y + y `div` 4 - y `div` 100 + y `div` 400))
+                in (y, day0 - (365 * y + y `div` 4 - y `div` 100 + y `div` 400))
       marchMonth0 = (doyEst * 5 + 2) `div` 153
       month = (marchMonth0 + 2) `rem` 12 + 1
       dom = doyEst - (marchMonth0 * 306 + 5) `div` 10 + 1
       year = yearEst + adjust + marchMonth0 `div` 10
-  in fromJust (localDateOf year (fromIntegral month) (fromIntegral dom))
+   in fromJust (localDateOf year (fromIntegral month) (fromIntegral dom))
   -- Ported from java.time.LocalDate.ofEpochDay
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
@@ -70,6 +70,13 @@ instance HasMonth LocalDate where
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
+
+instance HasDayOfYear LocalDate where
+  getDayOfYear date = getFirstDayOfYear leap month + day - 1
+    where
+      leap = isLeapYear $ getYear date
+      month = toEnum $ getMonth date
+      day = getDayOfMonth date
 
 instance HasEpochDay LocalDate where
   getEpochDay (LocalDate y month day)
