@@ -70,3 +70,22 @@ instance HasMonth LocalDate where
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
+
+instance HasEpochDay LocalDate where
+  getEpochDay (LocalDate y month day)
+        -- Ported from java.time.LocalDate.getEpochDay
+   =
+    365 * y +
+    (if y >= 0
+       then (y + 3) `div` 4 - (y + 99) `div` 100 + (y + 399) `div` 400
+       else -(y `div` (-4) - y `div` (-100) + y `div` (-400))) +
+    ((367 * fromIntegral month - 362) `div` 12) +
+    (fromIntegral day - 1) +
+    (if month <= 2
+       then 0
+       else if isLeapYear y
+              then (-1)
+              else (-2)) -
+    numDaysFromYear0To1970
+    where
+      numDaysFromYear0To1970 = 719528

@@ -36,3 +36,17 @@ instance HasNanoOfSecond LocalDateTime where
 
 instance HasSecondOfDay LocalDateTime where
   getSecondOfDay (LocalDateTime _ time) = getSecondOfDay time
+
+instance HasEpochDay LocalDateTime where
+  getEpochDay (LocalDateTime date _) = getEpochDay date
+
+instance HasEpochSecond LocalDateTime where
+  getEpochSecond (LocalDateTime date time) =
+    getEpochDay date * secondsPerDay + fromIntegral (getSecondOfDay time)
+    where
+      secondsPerDay = 24 * 60 * 60
+
+instance HasEpochMilli LocalDateTime where
+  getEpochMilli datetime =
+    getEpochSecond datetime * 1000 +
+    fromIntegral (getNanoOfSecond datetime) `div` 1000000
