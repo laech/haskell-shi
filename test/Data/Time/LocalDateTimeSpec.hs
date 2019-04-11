@@ -13,6 +13,7 @@ spec =
     describe "getYear" getYearSpec
     describe "getMonth" getMonthSpec
     describe "getDayOfMonth" getDayOfMonthSpec
+    describe "getDayOfYear" getDayOfYearSpec
     describe "getHour" getHourSpec
     describe "getMinute" getMinuteSpec
     describe "getSecond" getSecondSpec
@@ -85,6 +86,23 @@ getDayOfMonthSpec =
   where
     test arg@(datetime, day) =
       it (show arg) $ getDayOfMonth datetime `shouldBe` day
+
+getDayOfYearSpec :: Spec
+getDayOfYearSpec =
+  mapM_
+    test
+    [ (localDateTimeValid 1970 1 1 1 2 3 4, 1)
+    , (localDateTimeValid 1970 1 2 0 0 0 0, 2)
+    , (localDateTimeValid 1970 2 1 9 8 7 6, 32)
+    , (localDateTimeValid 1970 12 31 0 0 0 0, 365)
+    , (localDateTimeValid 2000 2 28 0 0 0 0, 59)
+    , (localDateTimeValid 2000 2 29 2 2 2 2, 60)
+    , (localDateTimeValid 2000 3 1 0 0 0 0, 61)
+    , (localDateTimeValid 2000 12 31 0 0 0 0, 366)
+    ]
+  where
+    test arg@(datetime, dayOfYear) =
+      it (show arg) $ getDayOfYear datetime `shouldBe` dayOfYear
 
 getHourSpec :: Spec
 getHourSpec =
