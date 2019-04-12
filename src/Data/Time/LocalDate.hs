@@ -72,11 +72,15 @@ instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
 
 instance HasDayOfYear LocalDate where
+
   getDayOfYear date = getFirstDayOfYear leap month + day - 1
     where
       leap = isLeapYear $ getYear date
       month = toEnum $ getMonth date
       day = getDayOfMonth date
+
+  addDays date 0 = date
+  addDays date days = localDateOfEpochDay $ getEpochDay date + days
 
 instance HasEpochDay LocalDate where
   getEpochDay (LocalDate y month day)

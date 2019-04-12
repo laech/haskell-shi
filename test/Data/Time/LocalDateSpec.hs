@@ -8,6 +8,7 @@ spec :: Spec
 spec =
   describe "LocalDate" $ do
     describe "compare" compareSpec
+    describe "addDays" addDaysSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
     describe "localDateOf" localDateOfSpec
@@ -30,6 +31,24 @@ compareSpec =
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
+
+addDaysSpec :: Spec
+addDaysSpec =
+  mapM_
+    test
+    [ (localDateValid 1970 1 1, 0, localDateValid 1970 1 1)
+    , (localDateValid 1970 1 1, 1, localDateValid 1970 1 2)
+    , (localDateValid 1970 1 1, 2, localDateValid 1970 1 3)
+    , (localDateValid 1970 1 1, -1, localDateValid 1969 12 31)
+    , (localDateValid 1970 1 1, -2, localDateValid 1969 12 30)
+    , (localDateValid 2000 2 28, 1, localDateValid 2000 2 29)
+    , (localDateValid 2000 2 28, 2, localDateValid 2000 3 1)
+    , (localDateValid 2000 1 1, 365, localDateValid 2000 12 31)
+    , (localDateValid 2000 1 1, 366, localDateValid 2001 1 1)
+    ]
+  where
+    test arg@(fromDate, days, toDate) =
+      it (show arg) $ addDays fromDate days `shouldBe` toDate
 
 getEpochDaySpec :: Spec
 getEpochDaySpec =

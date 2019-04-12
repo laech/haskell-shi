@@ -23,7 +23,12 @@ instance HasDayOfMonth LocalDateTime where
   getDayOfMonth (LocalDateTime date _) = getDayOfMonth date
 
 instance HasDayOfYear LocalDateTime where
+
   getDayOfYear (LocalDateTime date _) = getDayOfYear date
+
+  addDays datetime 0 = datetime
+  addDays (LocalDateTime date time) days =
+    LocalDateTime (addDays date days) time
 
 instance HasHour LocalDateTime where
   getHour (LocalDateTime _ time) = getHour time

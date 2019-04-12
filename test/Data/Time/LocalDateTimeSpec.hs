@@ -22,6 +22,7 @@ spec =
     describe "getEpochDay" getEpochDaySpec
     describe "getEpochSecond" getEpochSecondSpec
     describe "getEpochMilli" getEpochMilliSpec
+    describe "addDays" addDaysSpec
 
 localDateTimeValid ::
      Integer -> Int -> Int -> Int -> Int -> Int -> Int -> LocalDateTime
@@ -214,3 +215,21 @@ getEpochMilliSpec =
   where
     test arg@(datetime, milli) =
       it (show arg) $ getEpochMilli datetime `shouldBe` milli
+
+addDaysSpec :: Spec
+addDaysSpec =
+  mapM_
+    test
+    [ (localDateTimeValid 1970 1 1 0 0 0 0, 0, localDateTimeValid 1970 1 1 0 0 0 0)
+    , (localDateTimeValid 1970 1 1 9 8 7 6, 1, localDateTimeValid 1970 1 2 9 8 7 6)
+    , (localDateTimeValid 1970 1 1 0 0 0 0, 2, localDateTimeValid 1970 1 3 0 0 0 0)
+    , (localDateTimeValid 1970 1 1 0 0 0 0, -1, localDateTimeValid 1969 12 31 0 0 0 0)
+    , (localDateTimeValid 1970 1 1 0 0 0 0, -2, localDateTimeValid 1969 12 30 0 0 0 0)
+    , (localDateTimeValid 2000 2 28 5 6 7 8, 1, localDateTimeValid 2000 2 29 5 6 7 8)
+    , (localDateTimeValid 2000 2 28 0 0 0 0, 2, localDateTimeValid 2000 3 1 0 0 0 0)
+    , (localDateTimeValid 2000 1 1 0 0 0 1, 365, localDateTimeValid 2000 12 31 0 0 0 1)
+    , (localDateTimeValid 2000 1 1 0 0 0 2, 366, localDateTimeValid 2001 1 1 0 0 0 2)
+    ]
+  where
+    test arg@(fromDateTime, days, toDateTime) =
+      it (show arg) $ addDays fromDateTime days `shouldBe` toDateTime
