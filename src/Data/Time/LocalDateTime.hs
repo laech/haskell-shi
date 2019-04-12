@@ -26,9 +26,9 @@ instance HasDayOfYear LocalDateTime where
 
   getDayOfYear (LocalDateTime date _) = getDayOfYear date
 
-  addDays datetime 0 = datetime
-  addDays (LocalDateTime date time) days =
-    LocalDateTime (addDays date days) time
+  addDays 0 dt = dt
+  addDays days (LocalDateTime date time) =
+    LocalDateTime (addDays days date) time
 
 instance HasHour LocalDateTime where
   getHour (LocalDateTime _ time) = getHour time

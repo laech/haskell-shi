@@ -48,7 +48,7 @@ addDaysSpec =
     ]
   where
     test arg@(fromDate, days, toDate) =
-      it (show arg) $ addDays fromDate days `shouldBe` toDate
+      it (show arg) $ addDays days fromDate `shouldBe` toDate
 
 getEpochDaySpec :: Spec
 getEpochDaySpec =

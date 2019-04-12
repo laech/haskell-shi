@@ -230,4 +230,4 @@ addDaysSpec =
     ]
   where
     test arg@(fromDateTime, days, toDateTime) =
-      it (show arg) $ addDays fromDateTime days `shouldBe` toDateTime
+      it (show arg) $ addDays days fromDateTime `shouldBe` toDateTime

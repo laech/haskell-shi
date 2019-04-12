@@ -29,7 +29,7 @@ class HasDayOfYear a where
 
   -- | Adds the given number of days, can be negative. Increments or
   -- decrements the month and year fields etc if any.
-  addDays :: a -> Integer -> a
+  addDays :: Int -> a -> a
 
 class HasHour a where
   getHour :: a -> Int
