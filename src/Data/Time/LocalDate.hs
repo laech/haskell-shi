@@ -62,8 +62,25 @@ localDateOf year month day =
       "Invalid date: year=" ++
       show year ++ ", month=" ++ show month ++ ", dayOfMonth=" ++ show day
 
+clipDayOfMonth :: Integer -> Int -> Int -> LocalDate
+clipDayOfMonth year month day = fromJust $ localDateOf year month day'
+  where
+    day' =
+      let maxDay = getDaysInMonth (isLeapYear year) (toEnum month)
+       in if maxDay > day
+            then day
+            else maxDay
+
 instance HasYear LocalDate where
   getYear (LocalDate y _ _) = y
+  addYears = addYears'
+
+addYears' :: Int -> LocalDate -> LocalDate
+addYears' n date =
+  clipDayOfMonth
+    (getYear date + fromIntegral n)
+    (getMonth date)
+    (getDayOfMonth date)
 
 instance HasMonth LocalDate where
   getMonth (LocalDate _ m _) = fromIntegral m
@@ -71,18 +88,12 @@ instance HasMonth LocalDate where
 
 addMonths' :: Int -> LocalDate -> LocalDate
 addMonths' 0 date = date
-addMonths' n date = fromJust $ localDateOf year month day
+addMonths' n date = clipDayOfMonth year month (getDayOfMonth date)
   where
     months =
       getYear date * 12 + fromIntegral (getMonth date) + fromIntegral n - 1
     year = months `div` 12
     month = fromIntegral $ months `mod` 12 + 1
-    day =
-      let maxDay = getDaysInMonth (isLeapYear year) (toEnum month)
-          oldDay = getDayOfMonth date
-       in if maxDay > oldDay
-            then oldDay
-            else maxDay
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d

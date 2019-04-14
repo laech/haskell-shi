@@ -16,6 +16,12 @@ module Data.Time.Base
 class HasYear a where
   getYear :: a -> Integer
 
+  -- | Adds the given number of years, can be negative.  The
+  -- resulting day of month will be adjusted if any, for example,
+  -- adding 1 year to 2000-02-29 will return 2001-02-28 as 2001-02-29
+  -- would be invalid.
+  addYears :: Int -> a -> a
+
 class HasMonth a where
   getMonth :: a -> Int
 

@@ -15,6 +15,11 @@ data LocalDateTime =
 
 instance HasYear LocalDateTime where
   getYear (LocalDateTime date _) = getYear date
+  addYears = addYears'
+
+addYears' :: Int -> LocalDateTime -> LocalDateTime
+addYears' 0 dt = dt
+addYears' n (LocalDateTime date time) = LocalDateTime (addYears n date) time
 
 instance HasMonth LocalDateTime where
   getMonth (LocalDateTime date _) = getMonth date
