@@ -18,6 +18,12 @@ instance HasYear LocalDateTime where
 
 instance HasMonth LocalDateTime where
   getMonth (LocalDateTime date _) = getMonth date
+  addMonths = addMonths'
+
+addMonths' :: Int -> LocalDateTime -> LocalDateTime
+addMonths' 0 dt = dt
+addMonths' n (LocalDateTime date time) =
+    LocalDateTime (addMonths n date) time
 
 instance HasDayOfMonth LocalDateTime where
   getDayOfMonth (LocalDateTime date _) = getDayOfMonth date

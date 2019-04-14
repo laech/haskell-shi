@@ -9,6 +9,7 @@ spec =
   describe "LocalDate" $ do
     describe "compare" compareSpec
     describe "addDays" addDaysSpec
+    describe "addMonths" addMonthsSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
     describe "localDateOf" localDateOfSpec
@@ -49,6 +50,34 @@ addDaysSpec =
   where
     test arg@(fromDate, days, toDate) =
       it (show arg) $ addDays days fromDate `shouldBe` toDate
+
+addMonthsSpec :: Spec
+addMonthsSpec =
+  mapM_
+    test
+    [ (localDateValid 1970 1 1, 1, localDateValid 1970 2 1)
+    , (localDateValid 1970 1 28, 1, localDateValid 1970 2 28)
+    , (localDateValid 1970 1 31, 1, localDateValid 1970 2 28)
+    , (localDateValid 1970 1 1, 2, localDateValid 1970 3 1)
+    , (localDateValid 1970 1 31, 3, localDateValid 1970 4 30)
+    , (localDateValid 1970 1 1, 12, localDateValid 1971 1 1)
+    , (localDateValid 1970 1 1, 25, localDateValid 1972 2 1)
+    , (localDateValid 1970 2 28, 360, localDateValid 2000 2 28)
+    , (localDateValid 2000 2 29, 12, localDateValid 2001 2 28)
+    , (localDateValid 1970 1 1, -1, localDateValid 1969 12 1)
+    , (localDateValid 1970 1 31, -1, localDateValid 1969 12 31)
+    , (localDateValid 1970 1 3, -1, localDateValid 1969 12 3)
+    , (localDateValid 1970 1 1, -12, localDateValid 1969 1 1)
+    , (localDateValid 1970 1 1, -13, localDateValid 1968 12 1)
+    , (localDateValid 2000 2 29, -12, localDateValid 1999 2 28)
+    , (localDateValid 0 1 1, 1, localDateValid 0 2 1)
+    , (localDateValid 0 1 1, -1, localDateValid (-1) 12 1)
+    , (localDateValid (-1) 1 1, -123, localDateValid (-12) 10 1)
+    , (localDateValid (-123) 1 1, -123, localDateValid (-134) 10 1)
+    ]
+  where
+    test arg@(fromDate, months, toDate) =
+      it (show arg) $ addMonths months fromDate `shouldBe` toDate
 
 getEpochDaySpec :: Spec
 getEpochDaySpec =

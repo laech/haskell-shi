@@ -19,6 +19,12 @@ class HasYear a where
 class HasMonth a where
   getMonth :: a -> Int
 
+  -- | Adds the given number of months, can be negative.  The
+  -- resulting day of month will be adjusted if any, for example,
+  -- adding 1 month to 2000-10-31 will return 2000-11-30 as 2000-11-31
+  -- would be invalid.
+  addMonths :: Int -> a -> a
+
 class HasDayOfMonth a where
   getDayOfMonth :: a -> Int
 
