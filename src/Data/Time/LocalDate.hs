@@ -88,15 +88,19 @@ instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
 
 instance HasDayOfYear LocalDate where
+  getDayOfYear = getDayOfYear'
+  addDays = addDays'
 
-  getDayOfYear date = getFirstDayOfYear leap month + day - 1
-    where
-      leap = isLeapYear $ getYear date
-      month = toEnum $ getMonth date
-      day = getDayOfMonth date
+addDays' :: Int -> LocalDate -> LocalDate
+addDays' 0 date = date
+addDays' days date = localDateOfEpochDay $ getEpochDay date + fromIntegral days
 
-  addDays 0 date = date
-  addDays days date = localDateOfEpochDay $ getEpochDay date + fromIntegral days
+getDayOfYear' :: LocalDate -> Int
+getDayOfYear' date = getFirstDayOfYear leap month + day - 1
+  where
+    leap = isLeapYear $ getYear date
+    month = toEnum $ getMonth date
+    day = getDayOfMonth date
 
 instance HasEpochDay LocalDate where
   getEpochDay (LocalDate y month day)

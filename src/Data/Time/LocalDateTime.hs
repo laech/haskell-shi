@@ -22,19 +22,21 @@ instance HasMonth LocalDateTime where
 
 addMonths' :: Int -> LocalDateTime -> LocalDateTime
 addMonths' 0 dt = dt
-addMonths' n (LocalDateTime date time) =
-    LocalDateTime (addMonths n date) time
+addMonths' n (LocalDateTime date time) = LocalDateTime (addMonths n date) time
 
 instance HasDayOfMonth LocalDateTime where
   getDayOfMonth (LocalDateTime date _) = getDayOfMonth date
 
 instance HasDayOfYear LocalDateTime where
+  getDayOfYear = getDayOfYear'
+  addDays = addDays'
 
-  getDayOfYear (LocalDateTime date _) = getDayOfYear date
+getDayOfYear' :: LocalDateTime -> Int
+getDayOfYear' (LocalDateTime date _) = getDayOfYear date
 
-  addDays 0 dt = dt
-  addDays days (LocalDateTime date time) =
-    LocalDateTime (addDays days date) time
+addDays' :: Int -> LocalDateTime -> LocalDateTime
+addDays' 0 dt = dt
+addDays' days (LocalDateTime date time) = LocalDateTime (addDays days date) time
 
 instance HasHour LocalDateTime where
   getHour (LocalDateTime _ time) = getHour time
