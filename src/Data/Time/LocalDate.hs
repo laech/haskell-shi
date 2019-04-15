@@ -74,13 +74,15 @@ clipDayOfMonth year month day = fromJust $ localDateOf year month day'
 instance HasYear LocalDate where
   getYear (LocalDate y _ _) = y
   addYears = addYears'
+  setYear = setYear'
 
 addYears' :: Int -> LocalDate -> LocalDate
-addYears' n date =
-  clipDayOfMonth
-    (getYear date + fromIntegral n)
-    (getMonth date)
-    (getDayOfMonth date)
+addYears' n date = setYear (getYear date + fromIntegral n) date
+
+setYear' :: Integer -> LocalDate -> LocalDate
+setYear' y date
+  | y == getYear date = date
+  | otherwise = clipDayOfMonth y (getMonth date) (getDayOfMonth date)
 
 instance HasMonth LocalDate where
   getMonth (LocalDate _ m _) = fromIntegral m

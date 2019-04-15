@@ -11,6 +11,7 @@ spec =
     describe "addDays" addDaysSpec
     describe "addMonths" addMonthsSpec
     describe "addYears" addYearsSpec
+    describe "setYear" setYearSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
     describe "localDateOf" localDateOfSpec
@@ -91,6 +92,18 @@ addYearsSpec =
   where
     test arg@(fromDate, years, toDate) =
       it (show arg) $ addYears years fromDate `shouldBe` toDate
+
+setYearSpec :: Spec
+setYearSpec =
+  mapM_
+    test
+    [ (localDateValid 1970 1 1, 0, localDateValid 0 1 1)
+    , (localDateValid 1970 2 28, 2000, localDateValid 2000 2 28)
+    , (localDateValid 2000 2 29, 2001, localDateValid 2001 2 28)
+    ]
+  where
+    test arg@(fromDate, year, toDate) =
+      it (show arg) $ setYear year fromDate `shouldBe` toDate
 
 getEpochDaySpec :: Spec
 getEpochDaySpec =
