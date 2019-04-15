@@ -2,6 +2,7 @@ module Data.Time.LocalDate
   ( LocalDate
   , localDateOf
   , localDateOfEpochDay
+  , localDateOfYearDay
   , module Data.Time.Base
   ) where
 
@@ -47,6 +48,15 @@ localDateOfEpochDay epochDay =
       year = yearEst + adjust + marchMonth0 `div` 10
    in fromJust (localDateOf year (fromIntegral month) (fromIntegral dom))
   -- Ported from java.time.LocalDate.ofEpochDay
+
+-- | Creates a local date from a year and a day of year. Errors if day
+-- of year is invalid.
+localDateOfYearDay :: MonadFail m => Integer -> Int -> m LocalDate
+localDateOfYearDay year day =
+  if day < 1 || day > getDaysInYear year
+    then fail $ "Invalid day of year: " ++ show day
+    else pure . localDateOfEpochDay $
+         (getEpochDay . fromJust $ localDateOf year 1 1) + fromIntegral day - 1
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf' :: MonadFail m => Integer -> Month -> Int -> m LocalDate
