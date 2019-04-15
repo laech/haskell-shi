@@ -13,6 +13,8 @@ module Data.Time.Base
   , HasEpochMilli(..)
   ) where
 
+import Data.Time.Month
+
 class HasYear a where
   getYear :: a -> Integer
 
@@ -28,7 +30,7 @@ class HasYear a where
   setYear :: Integer -> a -> a
 
 class HasMonth a where
-  getMonth :: a -> Int
+  getMonth :: a -> Month
 
   -- | Adds the given number of months, can be negative.  The
   -- resulting day of month will be adjusted if any, for example,

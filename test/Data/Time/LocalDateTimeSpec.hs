@@ -78,7 +78,7 @@ getMonthSpec =
     ]
   where
     test arg@(datetime, month) =
-      it (show arg) $ getMonth datetime `shouldBe` month
+      it (show arg) $ getMonth datetime `shouldBe` toEnum month
 
 getDayOfMonthSpec :: Spec
 getDayOfMonthSpec =

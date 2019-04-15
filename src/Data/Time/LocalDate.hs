@@ -49,6 +49,10 @@ localDateOfEpochDay epochDay =
   -- Ported from java.time.LocalDate.ofEpochDay
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
+localDateOf' :: MonadFail m => Integer -> Month -> Int -> m LocalDate
+localDateOf' year month day = localDateOf year (fromEnum month) day
+
+-- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
 localDateOf year month day =
   if monthIsInvalid || dayIsInvalid
@@ -62,11 +66,11 @@ localDateOf year month day =
       "Invalid date: year=" ++
       show year ++ ", month=" ++ show month ++ ", dayOfMonth=" ++ show day
 
-clipDayOfMonth :: Integer -> Int -> Int -> LocalDate
-clipDayOfMonth year month day = fromJust $ localDateOf year month day'
+clipDayOfMonth :: Integer -> Month -> Int -> LocalDate
+clipDayOfMonth year month day = fromJust $ localDateOf' year month day'
   where
     day' =
-      let maxDay = getDaysInMonth (isLeapYear year) (toEnum month)
+      let maxDay = getDaysInMonth (isLeapYear year) month
        in if maxDay > day
             then day
             else maxDay
@@ -85,7 +89,7 @@ setYear' y date
   | otherwise = clipDayOfMonth y (getMonth date) (getDayOfMonth date)
 
 instance HasMonth LocalDate where
-  getMonth (LocalDate _ m _) = fromIntegral m
+  getMonth (LocalDate _ m _) = toEnum $ fromIntegral m
   addMonths = addMonths'
 
 addMonths' :: Int -> LocalDate -> LocalDate
@@ -93,9 +97,11 @@ addMonths' 0 date = date
 addMonths' n date = clipDayOfMonth year month (getDayOfMonth date)
   where
     months =
-      getYear date * 12 + fromIntegral (getMonth date) + fromIntegral n - 1
+      getYear date * 12 + fromIntegral (fromEnum $ getMonth date) +
+      fromIntegral n -
+      1
     year = months `div` 12
-    month = fromIntegral $ months `mod` 12 + 1
+    month = toEnum . fromIntegral $ months `mod` 12 + 1
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
@@ -112,7 +118,7 @@ getDayOfYear' :: LocalDate -> Int
 getDayOfYear' date = getFirstDayOfYear leap month + day - 1
   where
     leap = isLeapYear $ getYear date
-    month = toEnum $ getMonth date
+    month = getMonth date
     day = getDayOfMonth date
 
 instance HasEpochDay LocalDate where
