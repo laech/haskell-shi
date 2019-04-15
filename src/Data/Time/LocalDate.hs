@@ -91,6 +91,7 @@ setYear' y date
 instance HasMonth LocalDate where
   getMonth (LocalDate _ m _) = toEnum $ fromIntegral m
   addMonths = addMonths'
+  setMonth = setMonth'
 
 addMonths' :: Int -> LocalDate -> LocalDate
 addMonths' 0 date = date
@@ -102,6 +103,11 @@ addMonths' n date = clipDayOfMonth year month (getDayOfMonth date)
       1
     year = months `div` 12
     month = toEnum . fromIntegral $ months `mod` 12 + 1
+
+setMonth' :: Month -> LocalDate -> LocalDate
+setMonth' month date
+  | month == getMonth date = date
+  | otherwise = clipDayOfMonth (getYear date) month (getDayOfMonth date)
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d

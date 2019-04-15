@@ -12,6 +12,7 @@ spec =
     describe "addMonths" addMonthsSpec
     describe "addYears" addYearsSpec
     describe "setYear" setYearSpec
+    describe "setMonth" setMonthSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
     describe "localDateOf" localDateOfSpec
@@ -104,6 +105,18 @@ setYearSpec =
   where
     test arg@(fromDate, year, toDate) =
       it (show arg) $ setYear year fromDate `shouldBe` toDate
+
+setMonthSpec :: Spec
+setMonthSpec =
+  mapM_
+    test
+    [ (localDate 1970 1 1, 1, localDate 1970 1 1)
+    , (localDate 1970 1 31, 2, localDate 1970 2 28)
+    , (localDate 2000 3 29, 2, localDate 2000 2 29)
+    ]
+  where
+    test arg@(fromDate, month, toDate) =
+      it (show arg) $ setMonth (toEnum month) fromDate `shouldBe` toDate
 
 getEpochDaySpec :: Spec
 getEpochDaySpec =

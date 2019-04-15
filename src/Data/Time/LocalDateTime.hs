@@ -6,6 +6,7 @@ module Data.Time.LocalDateTime
 import Data.Time.Base
 import Data.Time.LocalDate
 import Data.Time.LocalTime
+import Data.Time.Month
 
 -- | Date and time without time zone.
 data LocalDateTime =
@@ -29,10 +30,16 @@ setYear' y dt@(LocalDateTime date time)
 instance HasMonth LocalDateTime where
   getMonth (LocalDateTime date _) = getMonth date
   addMonths = addMonths'
+  setMonth = setMonth'
 
 addMonths' :: Int -> LocalDateTime -> LocalDateTime
 addMonths' 0 dt = dt
 addMonths' n (LocalDateTime date time) = LocalDateTime (addMonths n date) time
+
+setMonth' :: Month -> LocalDateTime -> LocalDateTime
+setMonth' month dt@(LocalDateTime date time)
+  | month == getMonth dt = dt
+  | otherwise = LocalDateTime (setMonth month date) time
 
 instance HasDayOfMonth LocalDateTime where
   getDayOfMonth (LocalDateTime date _) = getDayOfMonth date

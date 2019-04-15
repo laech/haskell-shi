@@ -18,10 +18,10 @@ import Data.Time.Month
 class HasYear a where
   getYear :: a -> Integer
 
-  -- | Adds the given number of years, can be negative. The
-  -- resulting day of month will be adjusted if any, for example,
-  -- adding 1 year to 2000-02-29 will return 2001-02-28 as 2001-02-29
-  -- would be invalid.
+  -- | Adds the given number of years, can be negative. The resulting
+  -- day of month will be adjusted if any, for example, adding 1 year
+  -- to 2000-02-29 will return 2001-02-28 as 2001-02-29 would be
+  -- invalid.
   addYears :: Int -> a -> a
 
   -- | Sets the year field. The resulting day of month will be
@@ -32,11 +32,16 @@ class HasYear a where
 class HasMonth a where
   getMonth :: a -> Month
 
-  -- | Adds the given number of months, can be negative.  The
-  -- resulting day of month will be adjusted if any, for example,
-  -- adding 1 month to 2000-10-31 will return 2000-11-30 as 2000-11-31
-  -- would be invalid.
+  -- | Adds the given number of months, can be negative. The resulting
+  -- day of month will be adjusted if any, for example, adding 1 month
+  -- to 2000-10-31 will return 2000-11-30 as 2000-11-31 would be
+  -- invalid.
   addMonths :: Int -> a -> a
+
+  -- | Sets the month field. The resulting day of month will be
+  -- adjusted if any, for example, setting the month of 2000-10-31 to
+  -- 11 will return 2000-11-30, as 2000-11-31 would be invalid.
+  setMonth :: Month -> a -> a
 
 class HasDayOfMonth a where
   getDayOfMonth :: a -> Int
