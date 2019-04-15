@@ -17,20 +17,20 @@ spec =
     describe "localDateOf" localDateOfSpec
     describe "localDateOfEpochDay" localDateOfEpochDaySpec
 
-localDateValid :: Integer -> Int -> Int -> LocalDate
-localDateValid y m d = fromJust $ localDateOf y m d
+localDate :: Integer -> Int -> Int -> LocalDate
+localDate y m d = fromJust $ localDateOf y m d
 
 compareSpec :: Spec
 compareSpec =
   mapM_
     test
-    [ (EQ, localDateValid 1 2 3, localDateValid 1 2 3)
-    , (LT, localDateValid 1 2 3, localDateValid 2 2 3)
-    , (LT, localDateValid 1 2 3, localDateValid 1 3 3)
-    , (LT, localDateValid 1 2 3, localDateValid 1 2 4)
-    , (GT, localDateValid 2 2 3, localDateValid 1 2 3)
-    , (GT, localDateValid 1 3 3, localDateValid 1 2 3)
-    , (GT, localDateValid 1 2 4, localDateValid 1 2 3)
+    [ (EQ, localDate 1 2 3, localDate 1 2 3)
+    , (LT, localDate 1 2 3, localDate 2 2 3)
+    , (LT, localDate 1 2 3, localDate 1 3 3)
+    , (LT, localDate 1 2 3, localDate 1 2 4)
+    , (GT, localDate 2 2 3, localDate 1 2 3)
+    , (GT, localDate 1 3 3, localDate 1 2 3)
+    , (GT, localDate 1 2 4, localDate 1 2 3)
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
@@ -39,15 +39,15 @@ addDaysSpec :: Spec
 addDaysSpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 0, localDateValid 1970 1 1)
-    , (localDateValid 1970 1 1, 1, localDateValid 1970 1 2)
-    , (localDateValid 1970 1 1, 2, localDateValid 1970 1 3)
-    , (localDateValid 1970 1 1, -1, localDateValid 1969 12 31)
-    , (localDateValid 1970 1 1, -2, localDateValid 1969 12 30)
-    , (localDateValid 2000 2 28, 1, localDateValid 2000 2 29)
-    , (localDateValid 2000 2 28, 2, localDateValid 2000 3 1)
-    , (localDateValid 2000 1 1, 365, localDateValid 2000 12 31)
-    , (localDateValid 2000 1 1, 366, localDateValid 2001 1 1)
+    [ (localDate 1970 1 1, 0, localDate 1970 1 1)
+    , (localDate 1970 1 1, 1, localDate 1970 1 2)
+    , (localDate 1970 1 1, 2, localDate 1970 1 3)
+    , (localDate 1970 1 1, -1, localDate 1969 12 31)
+    , (localDate 1970 1 1, -2, localDate 1969 12 30)
+    , (localDate 2000 2 28, 1, localDate 2000 2 29)
+    , (localDate 2000 2 28, 2, localDate 2000 3 1)
+    , (localDate 2000 1 1, 365, localDate 2000 12 31)
+    , (localDate 2000 1 1, 366, localDate 2001 1 1)
     ]
   where
     test arg@(fromDate, days, toDate) =
@@ -57,25 +57,25 @@ addMonthsSpec :: Spec
 addMonthsSpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 1, localDateValid 1970 2 1)
-    , (localDateValid 1970 1 28, 1, localDateValid 1970 2 28)
-    , (localDateValid 1970 1 31, 1, localDateValid 1970 2 28)
-    , (localDateValid 1970 1 1, 2, localDateValid 1970 3 1)
-    , (localDateValid 1970 1 31, 3, localDateValid 1970 4 30)
-    , (localDateValid 1970 1 1, 12, localDateValid 1971 1 1)
-    , (localDateValid 1970 1 1, 25, localDateValid 1972 2 1)
-    , (localDateValid 1970 2 28, 360, localDateValid 2000 2 28)
-    , (localDateValid 2000 2 29, 12, localDateValid 2001 2 28)
-    , (localDateValid 1970 1 1, -1, localDateValid 1969 12 1)
-    , (localDateValid 1970 1 31, -1, localDateValid 1969 12 31)
-    , (localDateValid 1970 1 3, -1, localDateValid 1969 12 3)
-    , (localDateValid 1970 1 1, -12, localDateValid 1969 1 1)
-    , (localDateValid 1970 1 1, -13, localDateValid 1968 12 1)
-    , (localDateValid 2000 2 29, -12, localDateValid 1999 2 28)
-    , (localDateValid 0 1 1, 1, localDateValid 0 2 1)
-    , (localDateValid 0 1 1, -1, localDateValid (-1) 12 1)
-    , (localDateValid (-1) 1 1, -123, localDateValid (-12) 10 1)
-    , (localDateValid (-123) 1 1, -123, localDateValid (-134) 10 1)
+    [ (localDate 1970 1 1, 1, localDate 1970 2 1)
+    , (localDate 1970 1 28, 1, localDate 1970 2 28)
+    , (localDate 1970 1 31, 1, localDate 1970 2 28)
+    , (localDate 1970 1 1, 2, localDate 1970 3 1)
+    , (localDate 1970 1 31, 3, localDate 1970 4 30)
+    , (localDate 1970 1 1, 12, localDate 1971 1 1)
+    , (localDate 1970 1 1, 25, localDate 1972 2 1)
+    , (localDate 1970 2 28, 360, localDate 2000 2 28)
+    , (localDate 2000 2 29, 12, localDate 2001 2 28)
+    , (localDate 1970 1 1, -1, localDate 1969 12 1)
+    , (localDate 1970 1 31, -1, localDate 1969 12 31)
+    , (localDate 1970 1 3, -1, localDate 1969 12 3)
+    , (localDate 1970 1 1, -12, localDate 1969 1 1)
+    , (localDate 1970 1 1, -13, localDate 1968 12 1)
+    , (localDate 2000 2 29, -12, localDate 1999 2 28)
+    , (localDate 0 1 1, 1, localDate 0 2 1)
+    , (localDate 0 1 1, -1, localDate (-1) 12 1)
+    , (localDate (-1) 1 1, -123, localDate (-12) 10 1)
+    , (localDate (-123) 1 1, -123, localDate (-134) 10 1)
     ]
   where
     test arg@(fromDate, months, toDate) =
@@ -85,9 +85,9 @@ addYearsSpec :: Spec
 addYearsSpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 1, localDateValid 1971 1 1)
-    , (localDateValid 2000 2 29, 1, localDateValid 2001 2 28)
-    , (localDateValid 2001 2 28, -1, localDateValid 2000 2 28)
+    [ (localDate 1970 1 1, 1, localDate 1971 1 1)
+    , (localDate 2000 2 29, 1, localDate 2001 2 28)
+    , (localDate 2001 2 28, -1, localDate 2000 2 28)
     ]
   where
     test arg@(fromDate, years, toDate) =
@@ -97,9 +97,9 @@ setYearSpec :: Spec
 setYearSpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 0, localDateValid 0 1 1)
-    , (localDateValid 1970 2 28, 2000, localDateValid 2000 2 28)
-    , (localDateValid 2000 2 29, 2001, localDateValid 2001 2 28)
+    [ (localDate 1970 1 1, 0, localDate 0 1 1)
+    , (localDate 1970 2 28, 2000, localDate 2000 2 28)
+    , (localDate 2000 2 29, 2001, localDate 2001 2 28)
     ]
   where
     test arg@(fromDate, year, toDate) =
@@ -109,61 +109,61 @@ getEpochDaySpec :: Spec
 getEpochDaySpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 0)
-    , (localDateValid 1970 1 2, 1)
-    , (localDateValid 1970 1 3, 2)
-    , (localDateValid 1970 12 31, 364)
-    , (localDateValid 1971 1 1, 365)
-    , (localDateValid 2004 2 29, 12477)
-    , (localDateValid 2019 3 17, 17972)
-    , (localDateValid 999999999 12 31, 365241780471)
-    , (localDateValid 74556927 9 2, 27230639126)
-    , (localDateValid 941048034 12 12, 343710017376)
-    , (localDateValid 56483748 1 8, 20629545808)
-    , (localDateValid 243946412 7 19, 89098878057)
-    , (localDateValid 78675278 5 11, 28734835828)
-    , (localDateValid 32078367 12 25, 11715663789)
-    , (localDateValid 463697857 4 1, 169361445098)
-    , (localDateValid 443805972 8 24, 162096083436)
-    , (localDateValid 470418915 7 16, 171816261230)
-    , (localDateValid 897678790 5 23, 327869726071)
-    , (localDateValid 162193233 1 15, 59239142391)
-    , (localDateValid 534365546 5 28, 195172288554)
-    , (localDateValid 1969 12 31, -1)
-    , (localDateValid 1969 12 30, -2)
-    , (localDateValid 1969 1 1, -365)
-    , (localDateValid 1960 2 29, -3594)
-    , (localDateValid 0 1 1, -719528)
-    , (localDateValid 0 12 31, -719163)
-    , (localDateValid (-400) 12 31, -865260)
-    , (localDateValid (-1) 12 31, -719529)
-    , (localDateValid (-1) 1 1, -719893)
-    , (localDateValid (-999999999) 1 1, -365243219162)
-    , (localDateValid (-44758093) 11 19, -16348276989)
-    , (localDateValid (-302472524) 10 20, -110476540082)
-    , (localDateValid (-984111839) 12 8, -359440187542)
-    , (localDateValid (-750556618) 8 8, -274135894858)
-    , (localDateValid (-882146331) 9 3, -322198050582)
-    , (localDateValid (-785520990) 2 4, -286906369684)
-    , (localDateValid (-26911170) 6 23, -9829822363)
-    , (localDateValid (-296189792) 6 13, -108181819469)
+    [ (localDate 1970 1 1, 0)
+    , (localDate 1970 1 2, 1)
+    , (localDate 1970 1 3, 2)
+    , (localDate 1970 12 31, 364)
+    , (localDate 1971 1 1, 365)
+    , (localDate 2004 2 29, 12477)
+    , (localDate 2019 3 17, 17972)
+    , (localDate 999999999 12 31, 365241780471)
+    , (localDate 74556927 9 2, 27230639126)
+    , (localDate 941048034 12 12, 343710017376)
+    , (localDate 56483748 1 8, 20629545808)
+    , (localDate 243946412 7 19, 89098878057)
+    , (localDate 78675278 5 11, 28734835828)
+    , (localDate 32078367 12 25, 11715663789)
+    , (localDate 463697857 4 1, 169361445098)
+    , (localDate 443805972 8 24, 162096083436)
+    , (localDate 470418915 7 16, 171816261230)
+    , (localDate 897678790 5 23, 327869726071)
+    , (localDate 162193233 1 15, 59239142391)
+    , (localDate 534365546 5 28, 195172288554)
+    , (localDate 1969 12 31, -1)
+    , (localDate 1969 12 30, -2)
+    , (localDate 1969 1 1, -365)
+    , (localDate 1960 2 29, -3594)
+    , (localDate 0 1 1, -719528)
+    , (localDate 0 12 31, -719163)
+    , (localDate (-400) 12 31, -865260)
+    , (localDate (-1) 12 31, -719529)
+    , (localDate (-1) 1 1, -719893)
+    , (localDate (-999999999) 1 1, -365243219162)
+    , (localDate (-44758093) 11 19, -16348276989)
+    , (localDate (-302472524) 10 20, -110476540082)
+    , (localDate (-984111839) 12 8, -359440187542)
+    , (localDate (-750556618) 8 8, -274135894858)
+    , (localDate (-882146331) 9 3, -322198050582)
+    , (localDate (-785520990) 2 4, -286906369684)
+    , (localDate (-26911170) 6 23, -9829822363)
+    , (localDate (-296189792) 6 13, -108181819469)
     ]
   where
-    test arg@(localDate, epochDay) =
-      it (show arg) $ getEpochDay localDate `shouldBe` epochDay
+    test arg@(date, epochDay) =
+      it (show arg) $ getEpochDay date `shouldBe` epochDay
 
 getDayOfYearSpec :: Spec
 getDayOfYearSpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 1)
-    , (localDateValid 1970 1 2, 2)
-    , (localDateValid 1970 2 1, 32)
-    , (localDateValid 1970 12 31, 365)
-    , (localDateValid 2000 2 28, 59)
-    , (localDateValid 2000 2 29, 60)
-    , (localDateValid 2000 3 1, 61)
-    , (localDateValid 2000 12 31, 366)
+    [ (localDate 1970 1 1, 1)
+    , (localDate 1970 1 2, 2)
+    , (localDate 1970 2 1, 32)
+    , (localDate 1970 12 31, 365)
+    , (localDate 2000 2 28, 59)
+    , (localDate 2000 2 29, 60)
+    , (localDate 2000 3 1, 61)
+    , (localDate 2000 12 31, 366)
     ]
   where
     test arg@(date, dayOfYear) =
@@ -179,10 +179,10 @@ localDateOfSpec =
     , (2000, 1, 90, Nothing)
     , (2011, -1, 1, Nothing)
     , (2018, 1, -3, Nothing)
-    , (1970, 1, 1, Just (localDateValid 1970 1 1))
-    , (2000, 2, 29, Just (localDateValid 2000 2 29))
-    , (-1, 1, 31, Just (localDateValid (-1) 1 31))
-    , (99999, 12, 31, Just (localDateValid 99999 12 31))
+    , (1970, 1, 1, Just (localDate 1970 1 1))
+    , (2000, 2, 29, Just (localDate 2000 2 29))
+    , (-1, 1, 31, Just (localDate (-1) 1 31))
+    , (99999, 12, 31, Just (localDate 99999 12 31))
     ]
   where
     test arg@(y, m, d, expected) =
@@ -192,19 +192,19 @@ localDateOfEpochDaySpec :: Spec
 localDateOfEpochDaySpec =
   mapM_
     test
-    [ (localDateValid 1970 1 1, 0)
-    , (localDateValid 1970 1 2, 1)
-    , (localDateValid 1970 1 3, 2)
-    , (localDateValid 1969 12 31, -1)
-    , (localDateValid 1969 12 30, -2)
-    , (localDateValid 2000 2 28, 11015)
-    , (localDateValid 2000 2 29, 11016)
-    , (localDateValid 2000 3 1, 11017)
-    , (localDateValid (-999999999) 1 1, -365243219162)
-    , (localDateValid 999999999 12 31, 365241780471)
-    , (localDateValid 0 1 1, -719528)
-    , (localDateValid 0 12 31, -719163)
+    [ (localDate 1970 1 1, 0)
+    , (localDate 1970 1 2, 1)
+    , (localDate 1970 1 3, 2)
+    , (localDate 1969 12 31, -1)
+    , (localDate 1969 12 30, -2)
+    , (localDate 2000 2 28, 11015)
+    , (localDate 2000 2 29, 11016)
+    , (localDate 2000 3 1, 11017)
+    , (localDate (-999999999) 1 1, -365243219162)
+    , (localDate 999999999 12 31, 365241780471)
+    , (localDate 0 1 1, -719528)
+    , (localDate 0 12 31, -719163)
     ]
   where
-    test arg@(localDate, epochDay) =
-      it (show arg) $ localDateOfEpochDay epochDay `shouldBe` localDate
+    test arg@(date, epochDay) =
+      it (show arg) $ localDateOfEpochDay epochDay `shouldBe` date
