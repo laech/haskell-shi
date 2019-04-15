@@ -1,6 +1,7 @@
 module Data.Time.LocalDate
   ( LocalDate
   , localDateOf
+  , localDateOf'
   , localDateOfEpochDay
   , localDateOfYearDay
   , module Data.Time.Base
