@@ -60,7 +60,7 @@ localDateOfYearDay year day =
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf' :: MonadFail m => Integer -> Month -> Int -> m LocalDate
-localDateOf' year month day = localDateOf year (fromEnum month) day
+localDateOf' year month = localDateOf year (fromEnum month)
 
 -- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
