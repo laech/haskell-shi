@@ -46,7 +46,6 @@ instance HasDayOfMonth LocalDateTime where
 
 instance HasDayOfYear LocalDateTime where
   getDayOfYear = getDayOfYear'
-  addDays = addDays'
 
 getDayOfYear' :: LocalDateTime -> Int
 getDayOfYear' (LocalDateTime date _) = getDayOfYear date
@@ -71,6 +70,7 @@ instance HasSecondOfDay LocalDateTime where
   getSecondOfDay (LocalDateTime _ time) = getSecondOfDay time
 
 instance HasEpochDay LocalDateTime where
+  addDays = addDays'
   getEpochDay (LocalDateTime date _) = getEpochDay date
 
 instance HasEpochSecond LocalDateTime where
