@@ -7,6 +7,7 @@ import Test.Hspec
 spec :: Spec
 spec =
   describe "LocalDate" $ do
+    describe "show" showSpec
     describe "compare" compareSpec
     describe "addDays" addDaysSpec
     describe "addMonths" addMonthsSpec
@@ -21,6 +22,22 @@ spec =
 
 localDate :: Integer -> Int -> Int -> LocalDate
 localDate y m d = fromJust $ localDateOf y m d
+
+showSpec :: Spec
+showSpec =
+  mapM_
+    test
+    [ (localDate 1970 1 1, "1970-01-01")
+    , (localDate 1970 1 31, "1970-01-31")
+    , (localDate 1970 11 1, "1970-11-01")
+    , (localDate 0 1 1, "0000-01-01")
+    , (localDate 1 1 1, "0001-01-01")
+    , (localDate (-1) 1 1, "-0001-01-01")
+    , (localDate (-99999) 1 1, "-99999-01-01")
+    , (localDate 99999 1 1, "99999-01-01")
+    ]
+  where
+    test (date, str) = it str $ show date `shouldBe` str
 
 compareSpec :: Spec
 compareSpec =

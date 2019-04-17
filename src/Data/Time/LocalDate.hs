@@ -20,7 +20,7 @@ data LocalDate =
   LocalDate Integer
             Word8
             Word8
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 -- | Creates a local date from an epoch day, where day 0 is 1970-01-01.
 localDateOfEpochDay :: Integer -> LocalDate
@@ -156,3 +156,23 @@ instance HasEpochDay LocalDate where
     numDaysFromYear0To1970
     where
       numDaysFromYear0To1970 = 719528
+
+instance Show LocalDate where
+  show = show'
+
+show' :: LocalDate -> String
+show' date = year ++ "-" ++ month ++ "-" ++ day
+  where
+    yearAbs = abs $ getYear date
+    year =
+      (if getYear date < 0
+         then "-"
+         else "") ++
+      pad 4 (show yearAbs)
+    month = pad 2 . show . fromEnum . getMonth $ date
+    day = pad 2 . show . getDayOfMonth $ date
+    pad n s =
+      let len = length s
+       in if len >= n
+            then s
+            else replicate (n - len) '0' ++ s
