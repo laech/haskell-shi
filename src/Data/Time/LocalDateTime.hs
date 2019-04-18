@@ -12,7 +12,7 @@ import Data.Time.Month
 data LocalDateTime =
   LocalDateTime LocalDate
                 LocalTime
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 instance HasYear LocalDateTime where
   getYear (LocalDateTime date _) = getYear date
@@ -83,3 +83,6 @@ instance HasEpochMilli LocalDateTime where
   getEpochMilli datetime =
     getEpochSecond datetime * 1000 +
     fromIntegral (getNanoOfSecond datetime) `div` 1000000
+
+instance Show LocalDateTime where
+  show (LocalDateTime date time) = show date ++ "T" ++ show time

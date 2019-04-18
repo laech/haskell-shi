@@ -9,6 +9,7 @@ import Test.Hspec
 spec :: Spec
 spec =
   describe "LocalDateTime" $ do
+    describe "show" showSpec
     describe "compare" compareSpec
     describe "getYear" getYearSpec
     describe "getMonth" getMonthSpec
@@ -34,6 +35,16 @@ localDateTime year month day hour minute second nano =
   LocalDateTime
     (fromJust (localDateOf year month day))
     (fromJust (localTimeOf hour minute second nano))
+
+showSpec :: Spec
+showSpec =
+  mapM_
+    test
+    [ (localDateTime 1970 1 2 3 4 5 6, "1970-01-02T03:04:05.000000006")
+    , (localDateTime 1970 1 2 3 4 5 0, "1970-01-02T03:04:05")
+    ]
+  where
+    test (dt, str) = it str $ show dt `shouldBe` str
 
 compareSpec :: Spec
 compareSpec =
