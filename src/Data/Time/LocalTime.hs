@@ -5,6 +5,7 @@ module Data.Time.LocalTime
   ) where
 
 import Control.Monad.Fail
+import Data.List
 import Data.Time.Base
 import Data.Word
 import Prelude hiding (fail)
@@ -14,7 +15,7 @@ data LocalTime =
             Word8
             Word8
             Word32
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
 localTimeOf hour minute second nano =
@@ -51,3 +52,23 @@ instance HasNanoOfSecond LocalTime where
 instance HasSecondOfDay LocalTime where
   getSecondOfDay time =
     getHour time * 60 * 60 + getMinute time * 60 + getSecond time
+
+instance Show LocalTime where
+  show = show'
+
+show' :: LocalTime -> String
+show' (LocalTime hour minute second nano) = hourS ++ ":" ++ minuteS ++ suffix
+  where
+    suffix
+      | nano > 0 = ":" ++ secondS ++ "." ++ nanoS
+      | second > 0 = ":" ++ secondS
+      | otherwise = ""
+    hourS = pad 2 . show $ hour
+    minuteS = pad 2 . show $ minute
+    secondS = pad 2 . show $ second
+    nanoS = dropWhileEnd (== '0') $ pad 9 . show $ nano
+    pad width str =
+      let len = length str
+       in if len >= width
+            then str
+            else replicate (width - len) '0' ++ str
