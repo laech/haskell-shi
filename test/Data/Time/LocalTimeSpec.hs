@@ -117,5 +117,4 @@ getSecondOfDaySpec =
     ]
   where
     test arg@(h, m, s, n, expected) =
-      it (show arg) $
-      getSecondOfDay (localTime h m s n) `shouldBe` expected
+      it (show arg) $ getSecondOfDay (localTime h m s n) `shouldBe` expected
