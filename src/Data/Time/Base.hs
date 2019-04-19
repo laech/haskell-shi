@@ -7,6 +7,7 @@ module Data.Time.Base
   , HasMinute(..)
   , HasSecond(..)
   , HasNanoOfSecond(..)
+  , HasNanoOfDay(..)
   , HasSecondOfDay(..)
   , HasEpochDay(..)
   , HasEpochSecond(..)
@@ -66,8 +67,12 @@ class HasNanoOfSecond a where
   -- time value.
   getNanoOfSecond :: a -> Int
 
+class HasNanoOfDay a where
+  -- | Gets the time as the nanosecond since the start of the day.
+  getNanoOfDay :: a -> Integer
+
 class HasSecondOfDay a where
-  -- | The second since the start of the day.
+  -- | Gets the time as the second since the start of the day.
   getSecondOfDay :: a -> Int
 
 class HasEpochDay a where

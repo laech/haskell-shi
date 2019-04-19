@@ -53,9 +53,15 @@ localTimeOfNanoOfDay nanoOfDay =
     (hour, nanoOfHour) = divMod nanoOfDay nsPerHour
     (minute, nanoOfMinute) = divMod nanoOfHour nsPerMinute
     (second, nano) = divMod nanoOfMinute nsPerSecond
-    nsPerSecond = 1000000000
-    nsPerMinute = 60000000000
-    nsPerHour = 3600000000000
+
+nsPerSecond :: Integer
+nsPerSecond = 1000000000
+
+nsPerMinute :: Integer
+nsPerMinute = 60000000000
+
+nsPerHour :: Integer
+nsPerHour = 3600000000000
 
 instance HasHour LocalTime where
   getHour (LocalTime h _ _ _) = fromIntegral h
@@ -72,6 +78,13 @@ instance HasNanoOfSecond LocalTime where
 instance HasSecondOfDay LocalTime where
   getSecondOfDay time =
     getHour time * 60 * 60 + getMinute time * 60 + getSecond time
+
+instance HasNanoOfDay LocalTime where
+  getNanoOfDay time =
+    fromIntegral (getHour time) * nsPerHour +
+    fromIntegral (getMinute time) * nsPerMinute +
+    fromIntegral (getSecond time) * nsPerSecond +
+    fromIntegral (getNanoOfSecond time)
 
 instance Show LocalTime where
   show = show'
