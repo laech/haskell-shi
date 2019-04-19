@@ -1,6 +1,7 @@
 module Data.Time.LocalTime
   ( LocalTime
   , localTimeOf
+  , localTimeOfNanoOfDay
   , module Data.Time.Base
   ) where
 
@@ -36,6 +37,25 @@ localTimeOf hour minute second nano =
     minuteIsInvalid = minute < 0 || minute > 59
     secondIsInvalid = second < 0 || second > 59
     nanoIsInvalid = nano < 0 || nano > 999999999
+
+-- | Creates a local time from nano second of day. Errors if parameter
+-- is outside of 0..(86400000000000-1)
+localTimeOfNanoOfDay :: MonadFail m => Integer -> m LocalTime
+localTimeOfNanoOfDay nanoOfDay =
+  if nanoOfDay < 0 || nanoOfDay >= 86400000000000
+    then fail $ "Invalid nano of day: " ++ show nanoOfDay
+    else localTimeOf
+           (fromIntegral hour)
+           (fromIntegral minute)
+           (fromIntegral second)
+           (fromIntegral nano)
+  where
+    (hour, nanoOfHour) = divMod nanoOfDay nsPerHour
+    (minute, nanoOfMinute) = divMod nanoOfHour nsPerMinute
+    (second, nano) = divMod nanoOfMinute nsPerSecond
+    nsPerSecond = 1000000000
+    nsPerMinute = 60000000000
+    nsPerHour = 3600000000000
 
 instance HasHour LocalTime where
   getHour (LocalTime h _ _ _) = fromIntegral h
