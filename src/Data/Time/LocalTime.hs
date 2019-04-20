@@ -7,6 +7,7 @@ module Data.Time.LocalTime
 
 import Control.Monad.Fail
 import Data.List
+import Data.Maybe
 import Data.Time.Base
 import Data.Word
 import Prelude hiding (fail)
@@ -58,10 +59,26 @@ nsPerSecond :: Integer
 nsPerSecond = 1000000000
 
 nsPerMinute :: Integer
-nsPerMinute = 60000000000
+nsPerMinute = nsPerSecond * 60
 
 nsPerHour :: Integer
-nsPerHour = 3600000000000
+nsPerHour = nsPerMinute * 60
+
+nsPerDay :: Integer
+nsPerDay = nsPerHour * 24
+
+addTime :: Int -> Int -> Int -> Int -> LocalTime -> (Int, LocalTime)
+addTime 0 0 0 0 time = (0, time)
+addTime hours minutes seconds nanos time = (fromIntegral days, time')
+  where
+    (days, ns) =
+      divMod
+        ((fromIntegral (getHour time) + fromIntegral hours) * nsPerHour +
+         (fromIntegral (getMinute time) + fromIntegral minutes) * nsPerMinute +
+         (fromIntegral (getSecond time) + fromIntegral seconds) * nsPerSecond +
+         (fromIntegral (getNanoOfSecond time) + fromIntegral nanos))
+        nsPerDay
+    time' = fromJust $ localTimeOfNanoOfDay ns
 
 instance HasHour LocalTime where
   getHour (LocalTime h _ _ _) = fromIntegral h
