@@ -82,6 +82,7 @@ instance HasSecond LocalDateTime where
 
 instance HasNanoOfSecond LocalDateTime where
   getNanoOfSecond (LocalDateTime _ time) = getNanoOfSecond time
+  addNanos = addTime' 0 0 0
 
 instance HasSecondOfDay LocalDateTime where
   getSecondOfDay (LocalDateTime _ time) = getSecondOfDay time

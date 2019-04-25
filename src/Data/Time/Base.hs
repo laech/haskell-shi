@@ -69,6 +69,7 @@ class HasNanoOfSecond a where
   -- of nano seconds (between 0 - 999,999,999) from the whole second
   -- time value.
   getNanoOfSecond :: a -> Int
+  addNanos :: Int -> a -> a
 
 class HasNanoOfDay a where
   -- | Gets the time as the nanosecond since the start of the day.

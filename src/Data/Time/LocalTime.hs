@@ -114,6 +114,8 @@ instance HasSecond LocalTime where
 
 instance HasNanoOfSecond LocalTime where
   getNanoOfSecond (LocalTime _ _ _ n) = fromIntegral n
+  addNanos 0 = id
+  addNanos n = snd . addTime 0 0 0 n
 
 instance HasSecondOfDay LocalTime where
   getSecondOfDay time =
