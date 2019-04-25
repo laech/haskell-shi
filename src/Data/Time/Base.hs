@@ -55,6 +55,10 @@ class HasDayOfYear a where
 class HasHour a where
   getHour :: a -> Int
 
+  -- | Adds the given number of hours, can be negative, wraps around
+  -- midnight.
+  addHours :: Int -> a -> a
+
 class HasMinute a where
   getMinute :: a -> Int
 

@@ -13,6 +13,8 @@ spec =
     describe "localTimeOfNanoOfDay" localTimeOfNanoOfDaySpec
     describe "getSecondOfDay" getSecondOfDaySpec
     describe "getNanoOfDay" getNanoOfDaySpec
+    describe "addTime" addTimeSpec
+    describe "addHours" addHoursSpec
 
 localTime :: Int -> Int -> Int -> Int -> LocalTime
 localTime h m s n = fromJust (localTimeOf h m s n)
@@ -133,3 +135,45 @@ getNanoOfDaySpec =
     ]
   where
     test (time, nano) = it (show time) $ getNanoOfDay time `shouldBe` nano
+
+addTimeSpec :: Spec
+addTimeSpec =
+  mapM_
+    test
+    [ (0, 0, 0, 0, localTime 0 0 0 0, (0, localTime 0 0 0 0))
+    , (0, 0, 0, 1, localTime 0 0 0 0, (0, localTime 0 0 0 1))
+    , (0, 0, 0, 1000000000, localTime 0 0 0 0, (0, localTime 0 0 1 0))
+    , (0, 0, 1, 0, localTime 0 0 0 0, (0, localTime 0 0 1 0))
+    , (0, 0, 1, 0, localTime 0 0 0 0, (0, localTime 0 0 1 0))
+    , (24, 0, 0, 0, localTime 0 0 0 0, (1, localTime 0 0 0 0))
+    , (-24, 0, 0, 0, localTime 0 0 0 0, (-1, localTime 0 0 0 0))
+    , (0, 1440, 0, 0, localTime 0 0 0 0, (1, localTime 0 0 0 0))
+    , (0, 0, 86400, 0, localTime 0 0 0 0, (1, localTime 0 0 0 0))
+    , (0, 0, 0, 86400000000000, localTime 0 0 0 0, (1, localTime 0 0 0 0))
+    ]
+  where
+    test arg@(hours, minutes, seconds, nanos, time, result) =
+      it (show arg) $ addTime hours minutes seconds nanos time `shouldBe` result
+
+addHoursSpec :: Spec
+addHoursSpec =
+  mapM_
+    test
+    [ (0, localTime 0 0 0 0, localTime 0 0 0 0)
+    , (1, localTime 0 0 0 0, localTime 1 0 0 0)
+    , (-1, localTime 0 0 0 0, localTime 23 0 0 0)
+    , (23, localTime 0 0 0 0, localTime 23 0 0 0)
+    , (24, localTime 0 0 0 0, localTime 0 0 0 0)
+    , (25, localTime 0 0 0 0, localTime 1 0 0 0)
+    , (123, localTime 0 0 0 0, localTime 3 0 0 0)
+    , (-123, localTime 0 0 0 0, localTime 21 0 0 0)
+    , (999999999, localTime 0 0 0 0, localTime 15 0 0 0)
+    , (-999999999, localTime 0 0 0 0, localTime 9 0 0 0)
+    , (0, localTime 1 2 3 4, localTime 1 2 3 4)
+    , (1, localTime 0 5 6 7, localTime 1 5 6 7)
+    , (-1, localTime 0 8 9 10, localTime 23 8 9 10)
+    , (23, localTime 0 11 12 13, localTime 23 11 12 13)
+    ]
+  where
+    test arg@(hours, oldTime, newTime) =
+      it (show arg) $ addHours hours oldTime `shouldBe` newTime

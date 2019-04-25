@@ -56,6 +56,13 @@ addDays' days (LocalDateTime date time) = LocalDateTime (addDays days date) time
 
 instance HasHour LocalDateTime where
   getHour (LocalDateTime _ time) = getHour time
+  addHours = addHours'
+
+addHours' :: Int -> LocalDateTime -> LocalDateTime
+addHours' 0 dt = dt
+addHours' hours (LocalDateTime date time) =
+  let (days, time') = addTime hours 0 0 0 time
+   in LocalDateTime (addDays days date) time'
 
 instance HasMinute LocalDateTime where
   getMinute (LocalDateTime _ time) = getMinute time

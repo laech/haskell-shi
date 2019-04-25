@@ -2,6 +2,7 @@ module Data.Time.LocalTime
   ( LocalTime
   , localTimeOf
   , localTimeOfNanoOfDay
+  , addTime
   , module Data.Time.Base
   ) where
 
@@ -67,7 +68,16 @@ nsPerHour = nsPerMinute * 60
 nsPerDay :: Integer
 nsPerDay = nsPerHour * 24
 
-addTime :: Int -> Int -> Int -> Int -> LocalTime -> (Int, LocalTime)
+-- | Adds the given amount of hours, minutes, seconds, and nanoseconds
+-- to a time, returns a new time and the number of days overfollowed
+-- from the addition.
+addTime ::
+     Int -- ^ Hours
+  -> Int -- ^ Minutes
+  -> Int -- ^ Seconds
+  -> Int -- ^ Nanoseconds
+  -> LocalTime
+  -> (Int, LocalTime)
 addTime 0 0 0 0 time = (0, time)
 addTime hours minutes seconds nanos time = (fromIntegral days, time')
   where
@@ -82,6 +92,8 @@ addTime hours minutes seconds nanos time = (fromIntegral days, time')
 
 instance HasHour LocalTime where
   getHour (LocalTime h _ _ _) = fromIntegral h
+  addHours 0 = id
+  addHours n = snd . addTime n 0 0 0
 
 instance HasMinute LocalTime where
   getMinute (LocalTime _ m _ _) = fromIntegral m
