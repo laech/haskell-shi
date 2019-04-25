@@ -104,6 +104,8 @@ instance HasHour LocalTime where
 
 instance HasMinute LocalTime where
   getMinute (LocalTime _ m _ _) = fromIntegral m
+  addMinutes 0 = id
+  addMinutes n = snd . addTime 0 n 0 0
 
 instance HasSecond LocalTime where
   getSecond (LocalTime _ _ s _) = fromIntegral s

@@ -60,18 +60,21 @@ addDays' :: Int -> LocalDateTime -> LocalDateTime
 addDays' 0 dt = dt
 addDays' days (LocalDateTime date time) = LocalDateTime (addDays days date) time
 
+addTime' :: Int -> Int -> Int -> Int -> LocalDateTime -> LocalDateTime
+addTime' 0 0 0 0 dt = dt
+addTime' hours minutes seconds nanos dt@(LocalDateTime date time) =
+  let (days, time') = addTime hours minutes seconds nanos time
+   in if days == 0 && time == time'
+        then dt
+        else LocalDateTime (addDays days date) time'
+
 instance HasHour LocalDateTime where
   getHour (LocalDateTime _ time) = getHour time
-  addHours = addHours'
-
-addHours' :: Int -> LocalDateTime -> LocalDateTime
-addHours' 0 dt = dt
-addHours' hours (LocalDateTime date time) =
-  let (days, time') = addTime hours 0 0 0 time
-   in LocalDateTime (addDays days date) time'
+  addHours n = addTime' n 0 0 0
 
 instance HasMinute LocalDateTime where
   getMinute (LocalDateTime _ time) = getMinute time
+  addMinutes n = addTime' 0 n 0 0
 
 instance HasSecond LocalDateTime where
   getSecond (LocalDateTime _ time) = getSecond time

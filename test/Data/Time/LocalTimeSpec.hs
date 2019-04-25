@@ -16,6 +16,7 @@ spec =
     describe "getNanoOfDay" getNanoOfDaySpec
     describe "addTime" addTimeSpec
     describe "addHours" addHoursSpec
+    describe "addMinutes" addMinutesSpec
 
 localTime :: Int -> Int -> Int -> Int -> LocalTime
 localTime h m s n = fromJust (localTimeOf h m s n)
@@ -183,3 +184,25 @@ addHoursSpec =
   where
     test arg@(hours, oldTime, newTime) =
       it (show arg) $ addHours hours oldTime `shouldBe` newTime
+
+addMinutesSpec :: Spec
+addMinutesSpec =
+  mapM_
+    test
+    [ (0, localTime 0 0 0 0, localTime 0 0 0 0)
+    , (1, localTime 0 0 0 0, localTime 0 1 0 0)
+    , (-1, localTime 0 0 0 0, localTime 23 59 0 0)
+    , (59, localTime 0 0 0 0, localTime 0 59 0 0)
+    , (60, localTime 0 0 0 0, localTime 1 0 0 0)
+    , (61, localTime 0 0 0 0, localTime 1 1 0 0)
+    , (123, localTime 0 0 0 0, localTime 2 3 0 0)
+    , (-123, localTime 0 0 0 0, localTime 21 57 0 0)
+    , (999999999, localTime 0 0 0 0, localTime 10 39 0 0)
+    , (-999999999, localTime 0 0 0 0, localTime 13 21 0 0)
+    , (0, localTime 1 2 3 4, localTime 1 2 3 4)
+    , (1, localTime 0 5 6 7, localTime 0 6 6 7)
+    , (-1, localTime 0 8 9 10, localTime 0 7 9 10)
+    ]
+  where
+    test arg@(minutes, oldTime, newTime) =
+      it (show arg) $ addMinutes minutes oldTime `shouldBe` newTime
