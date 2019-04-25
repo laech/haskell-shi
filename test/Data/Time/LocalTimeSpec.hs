@@ -11,6 +11,7 @@ spec =
     describe "compare" compareSpec
     describe "localTimeOf" localTimeOfSpec
     describe "localTimeOfNanoOfDay" localTimeOfNanoOfDaySpec
+    describe "localTimeOfSecondOfDay" localTimeOfSecondOfDaySpec
     describe "getLocalTime" getLocalTimeSpec
     describe "getSecondOfDay" getSecondOfDaySpec
     describe "getNanoOfDay" getNanoOfDaySpec
@@ -110,6 +111,24 @@ localTimeOfNanoOfDaySpec =
   where
     test (nano, time) =
       it (show nano) $ localTimeOfNanoOfDay nano `shouldBe` time
+
+localTimeOfSecondOfDaySpec :: Spec
+localTimeOfSecondOfDaySpec =
+  mapM_
+    test
+    [ (-1, Nothing)
+    , (86400, Nothing)
+    , (86399, Just $ localTime 23 59 59 0)
+    , (0, Just $ localTime 0 0 0 0)
+    , (1, Just $ localTime 0 0 1 0)
+    , (59, Just $ localTime 0 0 59 0)
+    , (60, Just $ localTime 0 1 0 0)
+    , (600, Just $ localTime 0 10 0 0)
+    , (3600, Just $ localTime 1 0 0 0)
+    ]
+  where
+    test (second, time) =
+      it (show second) $ localTimeOfSecondOfDay second `shouldBe` time
 
 getLocalTimeSpec :: Spec
 getLocalTimeSpec =
