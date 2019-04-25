@@ -62,6 +62,7 @@ class HasMinute a where
 
 class HasSecond a where
   getSecond :: a -> Int
+  addSeconds :: Int -> a -> a
 
 class HasNanoOfSecond a where
   -- | For a time value with nano second precision, return the number

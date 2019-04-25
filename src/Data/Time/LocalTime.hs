@@ -109,6 +109,8 @@ instance HasMinute LocalTime where
 
 instance HasSecond LocalTime where
   getSecond (LocalTime _ _ s _) = fromIntegral s
+  addSeconds 0 = id
+  addSeconds n = snd . addTime 0 0 n 0
 
 instance HasNanoOfSecond LocalTime where
   getNanoOfSecond (LocalTime _ _ _ n) = fromIntegral n

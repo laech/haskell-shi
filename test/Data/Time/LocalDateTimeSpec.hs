@@ -25,6 +25,7 @@ spec =
     describe "getEpochDay" getEpochDaySpec
     describe "getEpochSecond" getEpochSecondSpec
     describe "getEpochMilli" getEpochMilliSpec
+    describe "addSeconds" addSecondsSpec
     describe "addMinutes" addMinutesSpec
     describe "addHours" addHoursSpec
     describe "addDays" addDaysSpec
@@ -244,6 +245,26 @@ getEpochMilliSpec =
   where
     test arg@(datetime, milli) =
       it (show arg) $ getEpochMilli datetime `shouldBe` milli
+
+addSecondsSpec :: Spec
+addSecondsSpec =
+  mapM_
+    test
+    [ (0, localDateTime 1970 1 1 0 0 0 0, localDateTime 1970 1 1 0 0 0 0)
+    , (123, localDateTime 1970 1 1 0 0 0 0, localDateTime 1970 1 1 0 2 3 0)
+    , ( -123
+      , localDateTime 1970 1 1 0 0 0 0
+      , localDateTime 1969 12 31 23 57 57 0)
+    , ( 999999999
+      , localDateTime 1970 1 1 0 0 0 0
+      , localDateTime 2001 9 9 1 46 39 0)
+    , ( -999999999
+      , localDateTime 1970 1 1 0 0 0 0
+      , localDateTime 1938 4 24 22 13 21 0)
+    ]
+  where
+    test arg@(seconds, oldDateTime, newDateTime) =
+      it (show arg) $ addSeconds seconds oldDateTime `shouldBe` newDateTime
 
 addMinutesSpec :: Spec
 addMinutesSpec =

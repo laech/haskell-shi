@@ -78,6 +78,7 @@ instance HasMinute LocalDateTime where
 
 instance HasSecond LocalDateTime where
   getSecond (LocalDateTime _ time) = getSecond time
+  addSeconds n = addTime' 0 0 n 0
 
 instance HasNanoOfSecond LocalDateTime where
   getNanoOfSecond (LocalDateTime _ time) = getNanoOfSecond time

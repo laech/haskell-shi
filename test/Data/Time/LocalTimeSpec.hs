@@ -17,6 +17,7 @@ spec =
     describe "addTime" addTimeSpec
     describe "addHours" addHoursSpec
     describe "addMinutes" addMinutesSpec
+    describe "addSeconds" addSecondsSpec
 
 localTime :: Int -> Int -> Int -> Int -> LocalTime
 localTime h m s n = fromJust (localTimeOf h m s n)
@@ -206,3 +207,25 @@ addMinutesSpec =
   where
     test arg@(minutes, oldTime, newTime) =
       it (show arg) $ addMinutes minutes oldTime `shouldBe` newTime
+
+addSecondsSpec :: Spec
+addSecondsSpec =
+  mapM_
+    test
+    [ (0, localTime 0 0 0 0, localTime 0 0 0 0)
+    , (1, localTime 0 0 0 0, localTime 0 0 1 0)
+    , (-1, localTime 0 0 0 0, localTime 23 59 59 0)
+    , (59, localTime 0 0 0 0, localTime 0 0 59 0)
+    , (60, localTime 0 0 0 0, localTime 0 1 0 0)
+    , (61, localTime 0 0 0 0, localTime 0 1 1 0)
+    , (123, localTime 0 0 0 0, localTime 0 2 3 0)
+    , (-123, localTime 0 0 0 0, localTime 23 57 57 0)
+    , (999999999, localTime 0 0 0 0, localTime 01 46 39 0)
+    , (-999999999, localTime 0 0 0 0, localTime 22 13 21 0)
+    , (0, localTime 1 2 3 4, localTime 1 2 3 4)
+    , (1, localTime 0 5 6 7, localTime 0 5 7 7)
+    , (-1, localTime 0 8 9 10, localTime 0 8 8 10)
+    ]
+  where
+    test arg@(seconds, oldTime, newTime) =
+      it (show arg) $ addSeconds seconds oldTime `shouldBe` newTime
