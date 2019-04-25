@@ -11,6 +11,8 @@ spec =
   describe "LocalDateTime" $ do
     describe "show" showSpec
     describe "compare" compareSpec
+    describe "getLocalDate" getLocalDateSpec
+    describe "getLocalTime" getLocalTimeSpec
     describe "getYear" getYearSpec
     describe "getMonth" getMonthSpec
     describe "getDayOfMonth" getDayOfMonthSpec
@@ -69,6 +71,18 @@ compareSpec =
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
+
+getLocalDateSpec :: Spec
+getLocalDateSpec =
+  it "should return the date part" $
+  getLocalDate (localDateTime 1 2 3 4 5 6 7) `shouldBe`
+  fromJust (localDateOf 1 2 3)
+
+getLocalTimeSpec :: Spec
+getLocalTimeSpec =
+  it "should return the date part" $
+  getLocalTime (localDateTime 1 2 3 4 5 6 7) `shouldBe`
+  fromJust (localTimeOf 4 5 6 7)
 
 getYearSpec :: Spec
 getYearSpec =

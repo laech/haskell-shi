@@ -1,5 +1,6 @@
 module Data.Time.LocalTime
   ( LocalTime
+  , HasLocalTime(..)
   , localTimeOf
   , localTimeOfNanoOfDay
   , addTime
@@ -19,6 +20,12 @@ data LocalTime =
             Word8
             Word32
   deriving (Eq, Ord)
+
+class HasLocalTime a where
+  getLocalTime :: a -> LocalTime
+
+instance HasLocalTime LocalTime where
+  getLocalTime = id
 
 localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
 localTimeOf hour minute second nano =

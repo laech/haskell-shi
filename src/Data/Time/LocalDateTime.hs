@@ -14,6 +14,12 @@ data LocalDateTime =
                 LocalTime
   deriving (Eq, Ord)
 
+instance HasLocalDate LocalDateTime where
+  getLocalDate (LocalDateTime date _) = date
+
+instance HasLocalTime LocalDateTime where
+  getLocalTime (LocalDateTime _ time) = time
+
 instance HasYear LocalDateTime where
   getYear (LocalDateTime date _) = getYear date
   addYears = addYears'

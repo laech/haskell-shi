@@ -1,5 +1,6 @@
 module Data.Time.LocalDate
   ( LocalDate
+  , HasLocalDate(..)
   , localDateOf
   , localDateOf'
   , localDateOfEpochDay
@@ -21,6 +22,12 @@ data LocalDate =
             Word8
             Word8
   deriving (Eq, Ord)
+
+class HasLocalDate a where
+  getLocalDate :: a -> LocalDate
+
+instance HasLocalDate LocalDate where
+  getLocalDate = id
 
 -- | Creates a local date from an epoch day, where day 0 is 1970-01-01.
 localDateOfEpochDay :: Integer -> LocalDate

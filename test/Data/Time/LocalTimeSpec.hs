@@ -11,6 +11,7 @@ spec =
     describe "compare" compareSpec
     describe "localTimeOf" localTimeOfSpec
     describe "localTimeOfNanoOfDay" localTimeOfNanoOfDaySpec
+    describe "getLocalTime" getLocalTimeSpec
     describe "getSecondOfDay" getSecondOfDaySpec
     describe "getNanoOfDay" getNanoOfDaySpec
     describe "addTime" addTimeSpec
@@ -106,6 +107,11 @@ localTimeOfNanoOfDaySpec =
   where
     test (nano, time) =
       it (show nano) $ localTimeOfNanoOfDay nano `shouldBe` time
+
+getLocalTimeSpec :: Spec
+getLocalTimeSpec =
+  it "should return self" $
+  getLocalTime (localTime 1 2 3 4) `shouldBe` localTime 1 2 3 4
 
 getSecondOfDaySpec :: Spec
 getSecondOfDaySpec =

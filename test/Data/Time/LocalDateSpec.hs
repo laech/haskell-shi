@@ -14,6 +14,7 @@ spec =
     describe "addYears" addYearsSpec
     describe "setYear" setYearSpec
     describe "setMonth" setMonthSpec
+    describe "getLocalDate" getLocalDateSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
     describe "localDateOf" localDateOfSpec
@@ -182,6 +183,11 @@ getEpochDaySpec =
   where
     test arg@(date, epochDay) =
       it (show arg) $ getEpochDay date `shouldBe` epochDay
+
+getLocalDateSpec :: Spec
+getLocalDateSpec =
+  it "should return self" $
+  getLocalDate (localDate 1 2 3) `shouldBe` localDate 1 2 3
 
 getDayOfYearSpec :: Spec
 getDayOfYearSpec =
