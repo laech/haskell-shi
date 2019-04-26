@@ -1,12 +1,12 @@
 module Data.Time.LocalDateTime
-  ( LocalDateTime(..)
+  ( LocalDateTime
+  , localDateTimeOf
   , module Data.Time.Base
   ) where
 
 import Data.Time.Base
 import Data.Time.LocalDate
 import Data.Time.LocalTime
-import Data.Time.Month
 
 -- | Date and time without time zone.
 data LocalDateTime =
@@ -14,86 +14,71 @@ data LocalDateTime =
                 LocalTime
   deriving (Eq, Ord)
 
+localDateTimeOf :: LocalDate -> LocalTime -> LocalDateTime
+localDateTimeOf = LocalDateTime
+
 instance HasLocalDate LocalDateTime where
   getLocalDate (LocalDateTime date _) = date
+  setLocalDate date dt@(LocalDateTime date' time)
+    | date == date' = dt
+    | otherwise = localDateTimeOf date time
 
 instance HasLocalTime LocalDateTime where
   getLocalTime (LocalDateTime _ time) = time
+  setLocalTime time dt@(LocalDateTime date time')
+    | time == time' = dt
+    | otherwise = localDateTimeOf date time
 
 instance HasYear LocalDateTime where
-  getYear (LocalDateTime date _) = getYear date
-  addYears = addYears'
-  setYear = setYear'
-
-addYears' :: Int -> LocalDateTime -> LocalDateTime
-addYears' n dt = setYear (getYear dt + fromIntegral n) dt
-
-setYear' :: Integer -> LocalDateTime -> LocalDateTime
-setYear' y dt@(LocalDateTime date time)
-  | y == getYear dt = dt
-  | otherwise = LocalDateTime (setYear y date) time
+  getYear = getYear . getLocalDate
+  setYear y = modifyLocalDate (setYear y . getLocalDate)
 
 instance HasMonth LocalDateTime where
-  getMonth (LocalDateTime date _) = getMonth date
-  addMonths = addMonths'
-  setMonth = setMonth'
-
-addMonths' :: Int -> LocalDateTime -> LocalDateTime
-addMonths' 0 dt = dt
-addMonths' n (LocalDateTime date time) = LocalDateTime (addMonths n date) time
-
-setMonth' :: Month -> LocalDateTime -> LocalDateTime
-setMonth' month dt@(LocalDateTime date time)
-  | month == getMonth dt = dt
-  | otherwise = LocalDateTime (setMonth month date) time
+  getMonth = getMonth . getLocalDate
+  addMonths n = modifyLocalDate (addMonths n . getLocalDate)
+  setMonth m = modifyLocalDate (setMonth m . getLocalDate)
 
 instance HasDayOfMonth LocalDateTime where
-  getDayOfMonth (LocalDateTime date _) = getDayOfMonth date
+  getDayOfMonth = getDayOfMonth . getLocalDate
 
 instance HasDayOfYear LocalDateTime where
   getDayOfYear = getDayOfYear'
 
 getDayOfYear' :: LocalDateTime -> Int
-getDayOfYear' (LocalDateTime date _) = getDayOfYear date
-
-addDays' :: Int -> LocalDateTime -> LocalDateTime
-addDays' 0 dt = dt
-addDays' days (LocalDateTime date time) = LocalDateTime (addDays days date) time
+getDayOfYear' = getDayOfYear . getLocalDate
 
 addTime' :: Int -> Int -> Int -> Int -> LocalDateTime -> LocalDateTime
 addTime' 0 0 0 0 dt = dt
-addTime' hours minutes seconds nanos dt@(LocalDateTime date time) =
-  let (days, time') = addTime hours minutes seconds nanos time
-   in if days == 0 && time == time'
-        then dt
-        else LocalDateTime (addDays days date) time'
+addTime' hours minutes seconds nanos dt =
+  let (days, time') = addTime hours minutes seconds nanos (getLocalTime dt)
+   in addDays days . setLocalTime time' $ dt
 
 instance HasHour LocalDateTime where
-  getHour (LocalDateTime _ time) = getHour time
+  getHour = getHour . getLocalTime
   addHours n = addTime' n 0 0 0
 
 instance HasMinute LocalDateTime where
-  getMinute (LocalDateTime _ time) = getMinute time
+  getMinute = getMinute . getLocalTime
   addMinutes n = addTime' 0 n 0 0
 
 instance HasSecond LocalDateTime where
-  getSecond (LocalDateTime _ time) = getSecond time
+  getSecond = getSecond . getLocalTime
   addSeconds n = addTime' 0 0 n 0
 
 instance HasNanoOfSecond LocalDateTime where
-  getNanoOfSecond (LocalDateTime _ time) = getNanoOfSecond time
+  getNanoOfSecond = getNanoOfSecond . getLocalTime
   addNanos = addTime' 0 0 0
 
 instance HasSecondOfDay LocalDateTime where
-  getSecondOfDay (LocalDateTime _ time) = getSecondOfDay time
+  getSecondOfDay = getSecondOfDay . getLocalTime
 
 instance HasEpochDay LocalDateTime where
-  addDays = addDays'
-  getEpochDay (LocalDateTime date _) = getEpochDay date
+  addDays n = modifyLocalDate (addDays n . getLocalDate)
+  getEpochDay = getEpochDay . getLocalDate
 
 instance HasEpochSecond LocalDateTime where
-  getEpochSecond (LocalDateTime date time) =
-    getEpochDay date * secondsPerDay + fromIntegral (getSecondOfDay time)
+  getEpochSecond dt =
+    getEpochDay dt * secondsPerDay + fromIntegral (getSecondOfDay dt)
     where
       secondsPerDay = 24 * 60 * 60
 
@@ -103,4 +88,4 @@ instance HasEpochMilli LocalDateTime where
     fromIntegral (getNanoOfSecond datetime) `div` 1000000
 
 instance Show LocalDateTime where
-  show (LocalDateTime date time) = show date ++ "T" ++ show time
+  show dt = show (getLocalDate dt) ++ "T" ++ show (getLocalTime dt)

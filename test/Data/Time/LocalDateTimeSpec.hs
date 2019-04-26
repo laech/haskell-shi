@@ -38,7 +38,7 @@ spec =
 localDateTime ::
      Integer -> Int -> Int -> Int -> Int -> Int -> Int -> LocalDateTime
 localDateTime year month day hour minute second nano =
-  LocalDateTime
+  localDateTimeOf
     (fromJust (localDateOf year month day))
     (fromJust (localTimeOf hour minute second nano))
 

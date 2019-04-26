@@ -1,6 +1,7 @@
 module Data.Time.LocalDate
   ( LocalDate
   , HasLocalDate(..)
+  , modifyLocalDate
   , localDateOf
   , localDateOf'
   , localDateOfEpochDay
@@ -25,9 +26,16 @@ data LocalDate =
 
 class HasLocalDate a where
   getLocalDate :: a -> LocalDate
+  setLocalDate :: LocalDate -> a -> a
+
+-- | Calls 'setLocalDate' with a new date obtained by apply a function
+-- to the old date.
+modifyLocalDate :: HasLocalDate a => (LocalDate -> LocalDate) -> a -> a
+modifyLocalDate f x = setLocalDate (f (getLocalDate x)) x
 
 instance HasLocalDate LocalDate where
   getLocalDate = id
+  setLocalDate = const
 
 -- | Creates a local date from an epoch day, where day 0 is 1970-01-01.
 localDateOfEpochDay :: Integer -> LocalDate
@@ -95,11 +103,7 @@ clipDayOfMonth year month day = fromJust $ localDateOf' year month day'
 
 instance HasYear LocalDate where
   getYear (LocalDate y _ _) = y
-  addYears = addYears'
   setYear = setYear'
-
-addYears' :: Int -> LocalDate -> LocalDate
-addYears' n date = setYear (getYear date + fromIntegral n) date
 
 setYear' :: Integer -> LocalDate -> LocalDate
 setYear' y date

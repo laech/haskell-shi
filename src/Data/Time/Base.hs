@@ -1,5 +1,7 @@
 module Data.Time.Base
   ( HasYear(..)
+  , modifyYear
+  , addYears
   , HasMonth(..)
   , HasDayOfMonth(..)
   , HasDayOfYear(..)
@@ -19,16 +21,19 @@ import Data.Time.Month
 class HasYear a where
   getYear :: a -> Integer
 
-  -- | Adds the given number of years, can be negative. The resulting
-  -- day of month will be adjusted if any, for example, adding 1 year
-  -- to 2000-02-29 will return 2001-02-28 as 2001-02-29 would be
-  -- invalid.
-  addYears :: Int -> a -> a
-
   -- | Sets the year field. The resulting day of month will be
   -- adjusted if any, for example, setting the year from 2000-02-29 to
   -- 2001 will return 2001-02-28, as 2001-02-29 would be invalid.
   setYear :: Integer -> a -> a
+
+-- | Calls 'setYear' with the new year by apply the old year to a
+-- function.
+modifyYear :: HasYear a => (Integer -> Integer) -> a -> a
+modifyYear f a = setYear (f $ getYear a) a
+
+-- | Calls 'setYear' by adding a value to the old year.
+addYears :: HasYear a => Int -> a -> a
+addYears n = modifyYear (+ fromIntegral n)
 
 class HasMonth a where
   getMonth :: a -> Month

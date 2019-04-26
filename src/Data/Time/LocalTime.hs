@@ -24,9 +24,11 @@ data LocalTime =
 
 class HasLocalTime a where
   getLocalTime :: a -> LocalTime
+  setLocalTime :: LocalTime -> a -> a
 
 instance HasLocalTime LocalTime where
   getLocalTime = id
+  setLocalTime = const
 
 localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
 localTimeOf hour minute second nano =
