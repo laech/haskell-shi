@@ -161,3 +161,7 @@ show' (LocalTime hour minute second nano) = hourS ++ ":" ++ minuteS ++ suffix
        in if len >= width
             then str
             else replicate (width - len) '0' ++ str
+
+instance Bounded LocalTime where
+  minBound = fromJust $ localTimeOfNanoOfDay 0
+  maxBound = fromJust $ localTimeOfNanoOfDay 86399999999999

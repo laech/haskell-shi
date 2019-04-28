@@ -9,6 +9,7 @@ spec =
   describe "LocalTime" $ do
     describe "show" showSpec
     describe "compare" compareSpec
+    describe "bounded" boundedSpec
     describe "localTimeOf" localTimeOfSpec
     describe "localTimeOfNanoOfDay" localTimeOfNanoOfDaySpec
     describe "localTimeOfSecondOfDay" localTimeOfSecondOfDaySpec
@@ -70,6 +71,12 @@ compareSpec =
     ]
   where
     test arg@(expect, a, b) = it (show arg) $ a `compare` b `shouldBe` expect
+
+boundedSpec :: Spec
+boundedSpec = do
+  it "minBound is 00:00" $ minBound `shouldBe` localTime 0 0 0 0
+  it "maxBound is 23:59:59.999999999" $
+    maxBound `shouldBe` localTime 23 59 59 999999999
 
 localTimeOfSpec :: Spec
 localTimeOfSpec =
