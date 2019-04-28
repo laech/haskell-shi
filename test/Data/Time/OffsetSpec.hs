@@ -7,6 +7,7 @@ import Test.Hspec
 spec :: Spec
 spec =
   describe "Offset" $ do
+    describe "show" showSpec
     describe "compare" compareSpec
     describe "bounded" boundedSpec
     describe "offsetOfSeconds" offsetOfSecondsSpec
@@ -14,6 +15,22 @@ spec =
 
 offsetOfSeconds' :: Int -> Offset
 offsetOfSeconds' = fromJust . offsetOfSeconds
+
+showSpec :: Spec
+showSpec =
+  mapM_
+    test
+    [ ("Z", offsetOfSeconds' 0)
+    , ("+00:00:01", offsetOfSeconds' 1)
+    , ("+00:01", offsetOfSeconds' 60)
+    , ("+00:01:01", offsetOfSeconds' 61)
+    , ("+01:00", offsetOfSeconds' 3600)
+    , ("+18:00", offsetOfSeconds' 64800)
+    , ("-00:00:01", offsetOfSeconds' (-1))
+    , ("-00:01", offsetOfSeconds' (-60))
+    ]
+  where
+    test (str, offset) = it str $ show offset `shouldBe` str
 
 compareSpec :: Spec
 compareSpec =
