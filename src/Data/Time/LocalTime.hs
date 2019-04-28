@@ -58,8 +58,7 @@ localTimeOfSecondOfDay secondOfDay =
     then fail $ "Invalid second of day: " ++ show secondOfDay
     else localTimeOf hour minute second 0
   where
-    (hour, secondOfHour) = divMod secondOfDay 3600
-    (minute, second) = divMod secondOfHour 60
+    (hour, (minute, second)) = (`divMod` 60) <$> secondOfDay `divMod` 3600
 
 -- | Creates a local time from nano second of day. Errors if parameter
 -- is outside of 0..(86400000000000-1)
@@ -73,9 +72,10 @@ localTimeOfNanoOfDay nanoOfDay =
            (fromIntegral second)
            (fromIntegral nano)
   where
-    (hour, nanoOfHour) = divMod nanoOfDay nsPerHour
-    (minute, nanoOfMinute) = divMod nanoOfHour nsPerMinute
-    (second, nano) = divMod nanoOfMinute nsPerSecond
+    (hour, (minute, (second, nano))) =
+      (fmap . fmap)
+        (`divMod` nsPerSecond)
+        ((`divMod` nsPerMinute) <$> divMod nanoOfDay nsPerHour)
 
 nsPerSecond :: Integer
 nsPerSecond = 1000000000
@@ -102,14 +102,14 @@ addTime ::
 addTime 0 0 0 0 time = (0, time)
 addTime hours minutes seconds nanos time = (fromIntegral days, time')
   where
-    (days, ns) =
+    (days, time') =
+      fromJust . localTimeOfNanoOfDay <$>
       divMod
         ((fromIntegral (getHour time) + fromIntegral hours) * nsPerHour +
          (fromIntegral (getMinute time) + fromIntegral minutes) * nsPerMinute +
          (fromIntegral (getSecond time) + fromIntegral seconds) * nsPerSecond +
          (fromIntegral (getNanoOfSecond time) + fromIntegral nanos))
         nsPerDay
-    time' = fromJust $ localTimeOfNanoOfDay ns
 
 instance HasHour LocalTime where
   getHour (LocalTime h _ _ _) = fromIntegral h

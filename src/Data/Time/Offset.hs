@@ -42,7 +42,7 @@ show' offsetSeconds =
   sign ++ pad hours ++ ":" ++ pad minutes ++ showIfNonZero seconds
   where
     (hours, (minutes, seconds)) =
-      flip divMod 60 <$> divMod (abs offsetSeconds) 3600
+      (`divMod` 60) <$> abs offsetSeconds `divMod` 3600
     sign =
       if offsetSeconds < 0
         then "-"
