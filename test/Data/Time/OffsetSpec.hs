@@ -1,5 +1,6 @@
 module Data.Time.OffsetSpec where
 
+import Data.Maybe
 import Data.Time.Offset
 import Test.Hspec
 
@@ -7,33 +8,38 @@ spec :: Spec
 spec =
   describe "Offset" $ do
     describe "compare" compareSpec
-    describe "offsetOfMinutes" offsetOfMinutesSpec
-    describe "offsetOfHoursMinutes" offsetOfHoursMinutesSpec
+    describe "bounded" boundedSpec
+    describe "offsetOfSeconds" offsetOfSecondsSpec
     describe "utcOffset" utcOffsetSpec
+
+offsetOfSeconds' :: Int -> Offset
+offsetOfSeconds' = fromJust . offsetOfSeconds
 
 compareSpec :: Spec
 compareSpec =
   mapM_
     test
-    [ (EQ, offsetOfMinutes 0, offsetOfMinutes 0)
-    , (EQ, offsetOfMinutes 1, offsetOfMinutes 1)
-    , (EQ, offsetOfMinutes (-1), offsetOfMinutes (-1))
-    , (LT, offsetOfMinutes (-1), offsetOfMinutes 1)
-    , (GT, offsetOfMinutes 2, offsetOfMinutes 1)
+    [ (EQ, offsetOfSeconds' 0, offsetOfSeconds' 0)
+    , (EQ, offsetOfSeconds' 1, offsetOfSeconds' 1)
+    , (EQ, offsetOfSeconds' (-1), offsetOfSeconds' (-1))
+    , (LT, offsetOfSeconds' (-1), offsetOfSeconds' 1)
+    , (GT, offsetOfSeconds' 2, offsetOfSeconds' 1)
     ]
   where
     test arg@(result, a, b) = it (show arg) $ a `compare` b `shouldBe` result
 
-offsetOfMinutesSpec :: Spec
-offsetOfMinutesSpec =
-  it "should returns the minutes" $
-  getTotalOffsetMinutes (offsetOfMinutes 123) `shouldBe` 123
+boundedSpec :: Spec
+boundedSpec = do
+  it "minBound is -18:00" $
+    minBound `shouldBe` fromJust (offsetOfSeconds (-18 * 60 * 60))
+  it "maxBound is +18:00" $
+    maxBound `shouldBe` fromJust (offsetOfSeconds (18 * 60 * 60))
 
-offsetOfHoursMinutesSpec :: Spec
-offsetOfHoursMinutesSpec =
-  it "should calculate the minutes" $
-  getTotalOffsetMinutes (offsetOfHoursMinutes 1 10) `shouldBe` 70
+offsetOfSecondsSpec :: Spec
+offsetOfSecondsSpec =
+  it "should returns the minutes" $
+  getTotalOffsetSeconds (offsetOfSeconds' 123) `shouldBe` 123
 
 utcOffsetSpec :: Spec
 utcOffsetSpec =
-  it "should have offset 0" $ getTotalOffsetMinutes utcOffset `shouldBe` 0
+  it "should have offset 0" $ getTotalOffsetSeconds utcOffset `shouldBe` 0
