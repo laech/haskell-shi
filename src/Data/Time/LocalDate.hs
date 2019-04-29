@@ -3,7 +3,6 @@
 module Data.Time.LocalDate
   ( LocalDate
   , HasLocalDate(..)
-  , modifyLocalDate
   , module Data.Time.Base
   ) where
 
@@ -22,16 +21,23 @@ data LocalDate =
             Word8
   deriving (Eq, Ord)
 
-class (HasYear a, HasMonth a, HasDayOfMonth a, HasDayOfYear a, HasEpochDay a) =>
+class ( HasYear a
+      , HasMonth a
+      , HasDayOfMonth a
+      , HasDayOfYear a
+      , HasEpochDay a
+      , AddDays a
+      ) =>
       HasLocalDate a
   where
   getLocalDate :: a -> LocalDate
   setLocalDate :: LocalDate -> a -> a
-
--- | Calls 'setLocalDate' with a new date obtained by apply a function
--- to the old date.
-modifyLocalDate :: HasLocalDate a => (LocalDate -> LocalDate) -> a -> a
-modifyLocalDate f x = setLocalDate (f (getLocalDate x)) x
+  setLocalDate date = modifyLocalDate (const date)
+  -- | Calls 'setLocalDate' with a new date obtained by apply a
+  -- function to the old date.
+  modifyLocalDate :: (LocalDate -> LocalDate) -> a -> a
+  modifyLocalDate f x = setLocalDate (f (getLocalDate x)) x
+  {-# MINIMAL getLocalDate, (setLocalDate | modifyLocalDate) #-}
 
 instance HasLocalDate LocalDate where
   getLocalDate = id
@@ -135,10 +141,12 @@ setMonth' month date
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
-  addDays = addDays'
 
 instance HasDayOfYear LocalDate where
   getDayOfYear = getDayOfYear'
+
+instance AddDays LocalDate where
+  addDays = addDays'
 
 addDays' :: Int -> LocalDate -> LocalDate
 addDays' 0 date = date

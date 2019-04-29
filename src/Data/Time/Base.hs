@@ -1,10 +1,9 @@
 module Data.Time.Base
   ( HasYear(..)
-  , modifyYear
-  , addYears
   , HasMonth(..)
   , HasDayOfMonth(..)
   , HasDayOfYear(..)
+  , AddDays(..)
   , HasHour(..)
   , HasMinute(..)
   , HasSecond(..)
@@ -33,15 +32,18 @@ class HasYear a where
   -- adjusted if any, for example, setting the year from 2000-02-29 to
   -- 2001 will return 2001-02-28, as 2001-02-29 would be invalid.
   setYear :: Integer -> a -> a
+  setYear y = modifyYear (const y)
 
--- | Calls 'setYear' with the new year by apply the old year to a
--- function.
-modifyYear :: HasYear a => (Integer -> Integer) -> a -> a
-modifyYear f a = setYear (f $ getYear a) a
+  -- | Calls 'setYear' with the new year by apply the old year to a
+  -- function.
+  modifyYear :: (Integer -> Integer) -> a -> a
+  modifyYear f a = setYear (f $ getYear a) a
 
--- | Calls 'setYear' by adding a value to the old year.
-addYears :: HasYear a => Int -> a -> a
-addYears n = modifyYear (+ fromIntegral n)
+  -- | Calls 'setYear' by adding a value to the old year.
+  addYears :: Int -> a -> a
+  addYears n = modifyYear (+ fromIntegral n)
+
+  {-# MINIMAL getYear, (setYear | modifyYear) #-}
 
 class HasMonth a where
   getMonth :: a -> Month
@@ -60,14 +62,15 @@ class HasMonth a where
 class HasDayOfMonth a where
   getDayOfMonth :: a -> Int
 
-  -- | Adds the given number of days, can be negative. Increments or
-  -- decrements the month and year fields etc if any.
-  addDays :: Int -> a -> a
-
 class HasDayOfYear a where
 
   -- | The day of year, between 1 and 365 (or 366 for a leap year).
   getDayOfYear :: a -> Int
+
+class AddDays a where
+  -- | Adds the given number of days, can be negative. Increments or
+  -- decrements the month and year fields etc if any.
+  addDays :: Int -> a -> a
 
 class HasHour a where
   getHour :: a -> Int
