@@ -2,7 +2,7 @@
 
 module Data.Time.LocalDateTime
   ( LocalDateTime
-  , HasLocalDateTime
+  , HasLocalDateTime(..)
   , FromLocalDateTime(..)
   , module Data.Time.Base
   , module Data.Time.LocalDate
