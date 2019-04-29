@@ -1,9 +1,8 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Data.Time.LocalTime
   ( LocalTime
   , HasLocalTime(..)
-  , localTimeOf
-  , localTimeOfNanoOfDay
-  , localTimeOfSecondOfDay
   , addTime
   , module Data.Time.Base
   ) where
@@ -30,8 +29,11 @@ instance HasLocalTime LocalTime where
   getLocalTime = id
   setLocalTime = const
 
-localTimeOf :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
-localTimeOf hour minute second nano =
+instance MonadFail m => FromTimeFields (m LocalTime) where
+  fromTimeFields = fromTimeFields'
+
+fromTimeFields' :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
+fromTimeFields' hour minute second nano =
   if hourIsInvalid || minuteIsInvalid || secondIsInvalid || nanoIsInvalid
     then fail $
          "Invalid time: hour=" ++
@@ -50,23 +52,25 @@ localTimeOf hour minute second nano =
     secondIsInvalid = second < 0 || second > 59
     nanoIsInvalid = nano < 0 || nano > 999999999
 
--- | Creates a local time from second of day. Errors if parameter is
--- outside of 0..(86400-1)
-localTimeOfSecondOfDay :: MonadFail m => Int -> m LocalTime
-localTimeOfSecondOfDay secondOfDay =
+instance MonadFail m => FromSecondOfDay (m LocalTime) where
+  fromSecondOfDay = fromSecondOfDay'
+
+fromSecondOfDay' :: MonadFail m => Int -> m LocalTime
+fromSecondOfDay' secondOfDay =
   if secondOfDay < 0 || secondOfDay >= 86400
     then fail $ "Invalid second of day: " ++ show secondOfDay
-    else localTimeOf hour minute second 0
+    else fromTimeFields' hour minute second 0
   where
     (hour, (minute, second)) = (`divMod` 60) <$> secondOfDay `divMod` 3600
 
--- | Creates a local time from nano second of day. Errors if parameter
--- is outside of 0..(86400000000000-1)
-localTimeOfNanoOfDay :: MonadFail m => Integer -> m LocalTime
-localTimeOfNanoOfDay nanoOfDay =
+instance MonadFail m => FromNanoOfDay (m LocalTime) where
+  fromNanoOfDay = fromNanoOfDay'
+
+fromNanoOfDay' :: MonadFail m => Integer -> m LocalTime
+fromNanoOfDay' nanoOfDay =
   if nanoOfDay < 0 || nanoOfDay >= 86400000000000
     then fail $ "Invalid nano of day: " ++ show nanoOfDay
-    else localTimeOf
+    else fromTimeFields'
            (fromIntegral hour)
            (fromIntegral minute)
            (fromIntegral second)
@@ -103,7 +107,7 @@ addTime 0 0 0 0 time = (0, time)
 addTime hours minutes seconds nanos time = (fromIntegral days, time')
   where
     (days, time') =
-      fromJust . localTimeOfNanoOfDay <$>
+      fromJust . fromNanoOfDay <$>
       divMod
         ((fromIntegral (getHour time) + fromIntegral hours) * nsPerHour +
          (fromIntegral (getMinute time) + fromIntegral minutes) * nsPerMinute +
@@ -163,5 +167,5 @@ show' (LocalTime hour minute second nano) = hourS ++ ":" ++ minuteS ++ suffix
             else replicate (width - len) '0' ++ str
 
 instance Bounded LocalTime where
-  minBound = fromJust $ localTimeOfNanoOfDay 0
-  maxBound = fromJust $ localTimeOfNanoOfDay 86399999999999
+  minBound = fromJust $ fromNanoOfDay 0
+  maxBound = fromJust $ fromNanoOfDay 86399999999999

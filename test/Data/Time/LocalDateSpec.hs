@@ -17,12 +17,12 @@ spec =
     describe "getLocalDate" getLocalDateSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
-    describe "localDateOf" localDateOfSpec
-    describe "localDateOfEpochDay" localDateOfEpochDaySpec
-    describe "localDateOfYearDay" localDateOfYearDaySpec
+    describe "fromDateFields" fromDateFieldsSpec
+    describe "fromEpochDay" fromEpochDaySpec
+    describe "fromYearDay" fromYearDaySpec
 
 localDate :: Integer -> Int -> Int -> LocalDate
-localDate y m d = fromJust $ localDateOf y m d
+localDate y m d = fromJust $ fromDateFields y m d
 
 showSpec :: Spec
 showSpec =
@@ -206,8 +206,8 @@ getDayOfYearSpec =
     test arg@(date, dayOfYear) =
       it (show arg) $ getDayOfYear date `shouldBe` dayOfYear
 
-localDateOfSpec :: Spec
-localDateOfSpec =
+fromDateFieldsSpec :: Spec
+fromDateFieldsSpec =
   mapM_
     test
     [ (1970, 2, 29, Nothing)
@@ -223,10 +223,10 @@ localDateOfSpec =
     ]
   where
     test arg@(y, m, d, expected) =
-      it (show arg) $ localDateOf y m d `shouldBe` expected
+      it (show arg) $ fromDateFields y m d `shouldBe` expected
 
-localDateOfEpochDaySpec :: Spec
-localDateOfEpochDaySpec =
+fromEpochDaySpec :: Spec
+fromEpochDaySpec =
   mapM_
     test
     [ (localDate 1970 1 1, 0)
@@ -244,10 +244,10 @@ localDateOfEpochDaySpec =
     ]
   where
     test arg@(date, epochDay) =
-      it (show arg) $ localDateOfEpochDay epochDay `shouldBe` date
+      it (show arg) $ fromEpochDay epochDay `shouldBe` date
 
-localDateOfYearDaySpec :: Spec
-localDateOfYearDaySpec =
+fromYearDaySpec :: Spec
+fromYearDaySpec =
   mapM_
     test
     [ (1970, 1, Just $ localDate 1970 1 1)
@@ -262,4 +262,4 @@ localDateOfYearDaySpec =
     ]
   where
     test arg@(year, day, date) =
-      it (show arg) $ localDateOfYearDay year day `shouldBe` date
+      it (show arg) $ fromYearDay year day `shouldBe` date

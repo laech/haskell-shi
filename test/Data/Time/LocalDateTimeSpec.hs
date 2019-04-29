@@ -38,9 +38,7 @@ spec =
 localDateTime ::
      Integer -> Int -> Int -> Int -> Int -> Int -> Int -> LocalDateTime
 localDateTime year month day hour minute second nano =
-  localDateTimeOf
-    (fromJust (localDateOf year month day))
-    (fromJust (localTimeOf hour minute second nano))
+  fromJust $ fromDateTimeFields year month day hour minute second nano
 
 showSpec :: Spec
 showSpec =
@@ -79,13 +77,13 @@ getLocalDateSpec :: Spec
 getLocalDateSpec =
   it "should return the date part" $
   getLocalDate (localDateTime 1 2 3 4 5 6 7) `shouldBe`
-  fromJust (localDateOf 1 2 3)
+  fromJust (fromDateFields 1 2 3)
 
 getLocalTimeSpec :: Spec
 getLocalTimeSpec =
   it "should return the date part" $
   getLocalTime (localDateTime 1 2 3 4 5 6 7) `shouldBe`
-  fromJust (localTimeOf 4 5 6 7)
+  fromJust (fromTimeFields 4 5 6 7)
 
 getYearSpec :: Spec
 getYearSpec =
@@ -340,8 +338,8 @@ addDaysSpec =
     , (localDateTime 2000 1 1 0 0 0 2, 366, localDateTime 2001 1 1 0 0 0 2)
     ]
   where
-    test arg@(fromDateTime, days, toDateTime) =
-      it (show arg) $ addDays days fromDateTime `shouldBe` toDateTime
+    test arg@(oldDateTime, days, newDateTime) =
+      it (show arg) $ addDays days oldDateTime `shouldBe` newDateTime
 
 addMonthsSpec :: Spec
 addMonthsSpec =

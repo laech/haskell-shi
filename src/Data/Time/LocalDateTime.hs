@@ -1,9 +1,12 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Data.Time.LocalDateTime
   ( LocalDateTime
-  , localDateTimeOf
+  , FromDateTime(..)
   , module Data.Time.Base
   ) where
 
+import Control.Monad.Fail
 import Data.Time.Base
 import Data.Time.LocalDate
 import Data.Time.LocalTime
@@ -14,20 +17,32 @@ data LocalDateTime =
                 LocalTime
   deriving (Eq, Ord)
 
-localDateTimeOf :: LocalDate -> LocalTime -> LocalDateTime
-localDateTimeOf = LocalDateTime
+class FromDateTime a where
+  fromDateTime :: LocalDateTime -> a
+  fromDateAndTime :: LocalDate -> LocalTime -> a
+  fromDateAndTime date time = fromDateTime $ LocalDateTime date time
+
+instance FromDateTime LocalDateTime where
+  fromDateTime = id
+
+instance MonadFail m => FromDateTimeFields (m LocalDateTime) where
+  fromDateTimeFields year month day hour minute second nano =
+    LocalDateTime <$> dateM <*> timeM
+    where
+      dateM = fromDateFields year month day
+      timeM = fromTimeFields hour minute second nano
 
 instance HasLocalDate LocalDateTime where
   getLocalDate (LocalDateTime date _) = date
   setLocalDate date dt@(LocalDateTime date' time)
     | date == date' = dt
-    | otherwise = localDateTimeOf date time
+    | otherwise = fromDateAndTime date time
 
 instance HasLocalTime LocalDateTime where
   getLocalTime (LocalDateTime _ time) = time
   setLocalTime time dt@(LocalDateTime date time')
     | time == time' = dt
-    | otherwise = localDateTimeOf date time
+    | otherwise = fromDateAndTime date time
 
 instance HasYear LocalDateTime where
   getYear = getYear . getLocalDate
@@ -42,10 +57,7 @@ instance HasDayOfMonth LocalDateTime where
   getDayOfMonth = getDayOfMonth . getLocalDate
 
 instance HasDayOfYear LocalDateTime where
-  getDayOfYear = getDayOfYear'
-
-getDayOfYear' :: LocalDateTime -> Int
-getDayOfYear' = getDayOfYear . getLocalDate
+  getDayOfYear = getDayOfYear . getLocalDate
 
 addTime' :: Int -> Int -> Int -> Int -> LocalDateTime -> LocalDateTime
 addTime' 0 0 0 0 dt = dt

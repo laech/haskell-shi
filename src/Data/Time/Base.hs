@@ -14,6 +14,14 @@ module Data.Time.Base
   , HasEpochDay(..)
   , HasEpochSecond(..)
   , HasEpochMilli(..)
+  , FromDateFields(..)
+  , FromTimeFields(..)
+  , FromDateTimeFields(..)
+  , FromEpochDay(..)
+  , FromEpochSecond(..)
+  , FromYearDay(..)
+  , FromNanoOfDay(..)
+  , FromSecondOfDay(..)
   ) where
 
 import Data.Time.Month
@@ -99,3 +107,36 @@ class HasEpochSecond a where
 class HasEpochMilli a where
   -- | The millisecond since epoch 1970-01-01T00:00:00Z.
   getEpochMilli :: a -> Integer
+
+class FromEpochDay a where
+  -- | Creates an instance from a day since 1970-01-01.
+  fromEpochDay :: Integer -> a
+
+class FromEpochSecond a where
+  -- | Creates an instance from a second since 1970-01-01T00:00:00Z
+  fromEpochSecond :: Integer -> a
+
+class FromYearDay a where
+  -- | Creates an instance from a year and a day of year.
+  fromYearDay :: Integer -> Int -> a
+
+class FromDateFields a where
+  -- | Creates an instance from year, month, day.
+  fromDateFields :: Integer -> Int -> Int -> a
+
+class FromTimeFields a where
+  -- | Creates an instance from hour, minute, second, nanosecond.
+  fromTimeFields :: Int -> Int -> Int -> Int -> a
+
+class FromDateTimeFields a where
+  -- | Creates an instance from year, month, day, hour, minutes,
+  -- second, nanosecond.
+  fromDateTimeFields :: Integer -> Int -> Int -> Int -> Int -> Int -> Int -> a
+
+class FromNanoOfDay a where
+  -- | Creates an instance from a nanosecond of day.
+  fromNanoOfDay :: Integer -> a
+
+class FromSecondOfDay a where
+  -- | Creates an instance from a second of day.
+  fromSecondOfDay :: Int -> a

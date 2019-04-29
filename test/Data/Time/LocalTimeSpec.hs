@@ -10,9 +10,9 @@ spec =
     describe "show" showSpec
     describe "compare" compareSpec
     describe "bounded" boundedSpec
-    describe "localTimeOf" localTimeOfSpec
-    describe "localTimeOfNanoOfDay" localTimeOfNanoOfDaySpec
-    describe "localTimeOfSecondOfDay" localTimeOfSecondOfDaySpec
+    describe "fromTimeFields" fromTimeFieldsSpec
+    describe "fromNanoOfDay" fromNanoOfDaySpec
+    describe "fromSecondOfDay" fromSecondOfDaySpec
     describe "getLocalTime" getLocalTimeSpec
     describe "getSecondOfDay" getSecondOfDaySpec
     describe "getNanoOfDay" getNanoOfDaySpec
@@ -23,7 +23,7 @@ spec =
     describe "addNanos" addNanosSpec
 
 localTime :: Int -> Int -> Int -> Int -> LocalTime
-localTime h m s n = fromJust (localTimeOf h m s n)
+localTime h m s n = fromJust (fromTimeFields h m s n)
 
 showSpec :: Spec
 showSpec =
@@ -78,8 +78,8 @@ boundedSpec = do
   it "maxBound is 23:59:59.999999999" $
     maxBound `shouldBe` localTime 23 59 59 999999999
 
-localTimeOfSpec :: Spec
-localTimeOfSpec =
+fromTimeFieldsSpec :: Spec
+fromTimeFieldsSpec =
   mapM_
     test
     [ (-1, 0, 0, 0, Nothing)
@@ -99,10 +99,10 @@ localTimeOfSpec =
     ]
   where
     test arg@(h, m, s, n, expected) =
-      it (show arg) $ localTimeOf h m s n `shouldBe` expected
+      it (show arg) $ fromTimeFields h m s n `shouldBe` expected
 
-localTimeOfNanoOfDaySpec :: Spec
-localTimeOfNanoOfDaySpec =
+fromNanoOfDaySpec :: Spec
+fromNanoOfDaySpec =
   mapM_
     test
     [ (-1, Nothing)
@@ -117,10 +117,10 @@ localTimeOfNanoOfDaySpec =
     ]
   where
     test (nano, time) =
-      it (show nano) $ localTimeOfNanoOfDay nano `shouldBe` time
+      it (show nano) $ fromNanoOfDay nano `shouldBe` time
 
-localTimeOfSecondOfDaySpec :: Spec
-localTimeOfSecondOfDaySpec =
+fromSecondOfDaySpec :: Spec
+fromSecondOfDaySpec =
   mapM_
     test
     [ (-1, Nothing)
@@ -135,7 +135,7 @@ localTimeOfSecondOfDaySpec =
     ]
   where
     test (second, time) =
-      it (show second) $ localTimeOfSecondOfDay second `shouldBe` time
+      it (show second) $ fromSecondOfDay second `shouldBe` time
 
 getLocalTimeSpec :: Spec
 getLocalTimeSpec =

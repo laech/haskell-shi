@@ -1,11 +1,9 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Data.Time.LocalDate
   ( LocalDate
   , HasLocalDate(..)
   , modifyLocalDate
-  , localDateOf
-  , localDateOf'
-  , localDateOfEpochDay
-  , localDateOfYearDay
   , module Data.Time.Base
   ) where
 
@@ -37,9 +35,11 @@ instance HasLocalDate LocalDate where
   getLocalDate = id
   setLocalDate = const
 
--- | Creates a local date from an epoch day, where day 0 is 1970-01-01.
-localDateOfEpochDay :: Integer -> LocalDate
-localDateOfEpochDay epochDay =
+instance FromEpochDay LocalDate where
+  fromEpochDay = fromEpochDay'
+
+fromEpochDay' :: Integer -> LocalDate
+fromEpochDay' epochDay =
   let days0000To1970 = 719528
       days400Years = 146097
       day0' = epochDay + days0000To1970 - 60
@@ -65,20 +65,19 @@ localDateOfEpochDay epochDay =
    in fromJust (localDateOf year (fromIntegral month) (fromIntegral dom))
   -- Ported from java.time.LocalDate.ofEpochDay
 
--- | Creates a local date from a year and a day of year. Errors if day
--- of year is invalid.
-localDateOfYearDay :: MonadFail m => Integer -> Int -> m LocalDate
-localDateOfYearDay year day =
+instance MonadFail m => FromYearDay (m LocalDate) where
+  fromYearDay = fromYearDay'
+
+fromYearDay' :: MonadFail m => Integer -> Int -> m LocalDate
+fromYearDay' year day =
   if day < 1 || day > getDaysInYear year
     then fail $ "Invalid day of year: " ++ show day
-    else pure . localDateOfEpochDay $
+    else pure . fromEpochDay $
          (getEpochDay . fromJust $ localDateOf year 1 1) + fromIntegral day - 1
 
--- | Creates a local date from year, month, day. Errors if date is invalid.
-localDateOf' :: MonadFail m => Integer -> Month -> Int -> m LocalDate
-localDateOf' year month = localDateOf year (fromEnum month)
+instance MonadFail m => FromDateFields (m LocalDate) where
+  fromDateFields = localDateOf
 
--- | Creates a local date from year, month, day. Errors if date is invalid.
 localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
 localDateOf year month day =
   if monthIsInvalid || dayIsInvalid
@@ -93,7 +92,8 @@ localDateOf year month day =
       show year ++ ", month=" ++ show month ++ ", dayOfMonth=" ++ show day
 
 clipDayOfMonth :: Integer -> Month -> Int -> LocalDate
-clipDayOfMonth year month day = fromJust $ localDateOf' year month day'
+clipDayOfMonth year month day =
+  fromJust $ localDateOf year (fromEnum month) day'
   where
     day' =
       let maxDay = getDaysInMonth (isLeapYear year) month
@@ -139,7 +139,7 @@ instance HasDayOfYear LocalDate where
 
 addDays' :: Int -> LocalDate -> LocalDate
 addDays' 0 date = date
-addDays' days date = localDateOfEpochDay $ getEpochDay date + fromIntegral days
+addDays' days date = fromEpochDay $ getEpochDay date + fromIntegral days
 
 getDayOfYear' :: LocalDate -> Int
 getDayOfYear' date = getFirstDayOfYear leap month + day - 1
