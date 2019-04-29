@@ -22,6 +22,7 @@ spec =
     describe "getSecond" getSecondSpec
     describe "getNanoOfSecond" getNanoOfSecondSpec
     describe "getSecondOfDay" getSecondOfDaySpec
+    describe "getNanoOfDay" getNanoOfDaySpec
     describe "getEpochDay" getEpochDaySpec
     describe "getEpochSecond" getEpochSecondSpec
     describe "getEpochMilli" getEpochMilliSpec
@@ -200,6 +201,17 @@ getSecondOfDaySpec =
     test arg@(datetime, second) =
       it (show arg) $ getSecondOfDay datetime `shouldBe` second
 
+getNanoOfDaySpec :: Spec
+getNanoOfDaySpec =
+  mapM_
+    test
+    [ (localDateTime 9 9 9 0 0 0 9, 9)
+    , (localDateTime 9 9 9 0 0 1 9, 1000000009)
+    ]
+  where
+    test arg@(datetime, nano) =
+      it (show arg) $ getNanoOfDay datetime `shouldBe` nano
+
 getEpochDaySpec :: Spec
 getEpochDaySpec =
   mapM_
@@ -354,8 +366,8 @@ addMonthsSpec =
     , (localDateTime 0 1 1 3 4 5 6, 1, localDateTime 0 2 1 3 4 5 6)
     ]
   where
-    test arg@(fromDate, months, toDate) =
-      it (show arg) $ addMonths months fromDate `shouldBe` toDate
+    test arg@(oldDate, months, newDate) =
+      it (show arg) $ addMonths months oldDate `shouldBe` newDate
 
 addYearsSpec :: Spec
 addYearsSpec =
@@ -366,8 +378,8 @@ addYearsSpec =
     , (localDateTime 2001 2 28 9 8 7 6, -1, localDateTime 2000 2 28 9 8 7 6)
     ]
   where
-    test arg@(fromDate, years, toDate) =
-      it (show arg) $ addYears years fromDate `shouldBe` toDate
+    test arg@(oldDate, years, newDate) =
+      it (show arg) $ addYears years oldDate `shouldBe` newDate
 
 setYearSpec :: Spec
 setYearSpec =
@@ -378,8 +390,8 @@ setYearSpec =
     , (localDateTime 2000 2 29 0 1 2 3, 2001, localDateTime 2001 2 28 0 1 2 3)
     ]
   where
-    test arg@(fromDate, year, toDate) =
-      it (show arg) $ setYear year fromDate `shouldBe` toDate
+    test arg@(oldDate, year, newDate) =
+      it (show arg) $ setYear year oldDate `shouldBe` newDate
 
 setMonthSpec :: Spec
 setMonthSpec =
@@ -391,5 +403,5 @@ setMonthSpec =
     , (localDateTime 2000 3 28 0 1 2 3, 2, localDateTime 2000 2 28 0 1 2 3)
     ]
   where
-    test arg@(fromDate, month, toDate) =
-      it (show arg) $ setMonth (toEnum month) fromDate `shouldBe` toDate
+    test arg@(oldDate, month, newDate) =
+      it (show arg) $ setMonth (toEnum month) oldDate `shouldBe` newDate

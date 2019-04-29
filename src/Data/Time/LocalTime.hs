@@ -14,6 +14,7 @@ import Data.Time.Base
 import Data.Word
 import Prelude hiding (fail)
 
+-- | Time without time zone.
 data LocalTime =
   LocalTime Word8
             Word8
@@ -21,7 +22,15 @@ data LocalTime =
             Word32
   deriving (Eq, Ord)
 
-class HasLocalTime a where
+class ( HasHour a
+      , HasMinute a
+      , HasSecond a
+      , HasNanoOfSecond a
+      , HasNanoOfDay a
+      , HasSecondOfDay a
+      ) =>
+      HasLocalTime a
+  where
   getLocalTime :: a -> LocalTime
   setLocalTime :: LocalTime -> a -> a
 

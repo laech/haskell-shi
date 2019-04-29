@@ -22,7 +22,9 @@ data LocalDate =
             Word8
   deriving (Eq, Ord)
 
-class HasLocalDate a where
+class (HasYear a, HasMonth a, HasDayOfMonth a, HasDayOfYear a, HasEpochDay a) =>
+      HasLocalDate a
+  where
   getLocalDate :: a -> LocalDate
   setLocalDate :: LocalDate -> a -> a
 

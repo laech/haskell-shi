@@ -2,6 +2,7 @@
 
 module Data.Time.LocalDateTime
   ( LocalDateTime
+  , HasLocalDateTime
   , FromLocalDateTime(..)
   , module Data.Time.Base
   ) where
@@ -16,6 +17,14 @@ data LocalDateTime =
   LocalDateTime LocalDate
                 LocalTime
   deriving (Eq, Ord)
+
+class (HasLocalDate a, HasLocalTime a, HasEpochSecond a, HasEpochMilli a) =>
+      HasLocalDateTime a
+  where
+  getLocalDateTime :: a -> LocalDateTime
+
+instance HasLocalDateTime LocalDateTime where
+  getLocalDateTime = id
 
 class FromLocalDateTime a where
   fromLocalDateTime :: LocalDateTime -> a
@@ -83,6 +92,9 @@ instance HasNanoOfSecond LocalDateTime where
 
 instance HasSecondOfDay LocalDateTime where
   getSecondOfDay = getSecondOfDay . getLocalTime
+
+instance HasNanoOfDay LocalDateTime where
+  getNanoOfDay = getNanoOfDay . getLocalTime
 
 instance HasEpochDay LocalDateTime where
   addDays n = modifyLocalDate (addDays n . getLocalDate)
