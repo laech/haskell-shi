@@ -64,6 +64,7 @@ instance HasMonth LocalDateTime where
 
 instance HasDayOfMonth LocalDateTime where
   getDayOfMonth = getDayOfMonth . getLocalDate
+  addDays n = modifyLocalDate (addDays n . getLocalDate)
 
 instance HasDayOfYear LocalDateTime where
   getDayOfYear = getDayOfYear . getLocalDate
@@ -97,7 +98,6 @@ instance HasNanoOfDay LocalDateTime where
   getNanoOfDay = getNanoOfDay . getLocalTime
 
 instance HasEpochDay LocalDateTime where
-  addDays n = modifyLocalDate (addDays n . getLocalDate)
   getEpochDay = getEpochDay . getLocalDate
 
 instance HasEpochSecond LocalDateTime where

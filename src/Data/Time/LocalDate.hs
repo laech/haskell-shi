@@ -135,6 +135,7 @@ setMonth' month date
 
 instance HasDayOfMonth LocalDate where
   getDayOfMonth (LocalDate _ _ d) = fromIntegral d
+  addDays = addDays'
 
 instance HasDayOfYear LocalDate where
   getDayOfYear = getDayOfYear'
@@ -151,7 +152,6 @@ getDayOfYear' date = getFirstDayOfYear leap month + day - 1
     day = getDayOfMonth date
 
 instance HasEpochDay LocalDate where
-  addDays = addDays'
   getEpochDay (LocalDate y month day)
         -- Ported from java.time.LocalDate.getEpochDay
    =

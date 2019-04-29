@@ -60,6 +60,10 @@ class HasMonth a where
 class HasDayOfMonth a where
   getDayOfMonth :: a -> Int
 
+  -- | Adds the given number of days, can be negative. Increments or
+  -- decrements the month and year fields etc if any.
+  addDays :: Int -> a -> a
+
 class HasDayOfYear a where
 
   -- | The day of year, between 1 and 365 (or 366 for a leap year).
@@ -95,10 +99,6 @@ class HasSecondOfDay a where
 class HasEpochDay a where
   -- | The day since epoch, where day 0 is 1970-01-01.
   getEpochDay :: a -> Integer
-
-  -- | Adds the given number of days, can be negative. Increments or
-  -- decrements the month and year fields etc if any.
-  addDays :: Int -> a -> a
 
 class HasEpochSecond a where
   -- | The second since epoch 1970-01-01T00:00:00Z.
