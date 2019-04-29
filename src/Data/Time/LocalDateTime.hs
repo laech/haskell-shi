@@ -2,7 +2,7 @@
 
 module Data.Time.LocalDateTime
   ( LocalDateTime
-  , FromDateTime(..)
+  , FromLocalDateTime(..)
   , module Data.Time.Base
   ) where
 
@@ -17,32 +17,32 @@ data LocalDateTime =
                 LocalTime
   deriving (Eq, Ord)
 
-class FromDateTime a where
-  fromDateTime :: LocalDateTime -> a
-  fromDateAndTime :: LocalDate -> LocalTime -> a
-  fromDateAndTime date time = fromDateTime $ LocalDateTime date time
+class FromLocalDateTime a where
+  fromLocalDateTime :: LocalDateTime -> a
+  fromLocalDateAndTime :: LocalDate -> LocalTime -> a
+  fromLocalDateAndTime date time = fromLocalDateTime $ LocalDateTime date time
 
-instance FromDateTime LocalDateTime where
-  fromDateTime = id
+instance FromLocalDateTime LocalDateTime where
+  fromLocalDateTime = id
 
-instance MonadFail m => FromDateTimeFields (m LocalDateTime) where
-  fromDateTimeFields year month day hour minute second nano =
+instance MonadFail m => FromDateTime (m LocalDateTime) where
+  fromDateTime year month day hour minute second nano =
     LocalDateTime <$> dateM <*> timeM
     where
-      dateM = fromDateFields year month day
-      timeM = fromTimeFields hour minute second nano
+      dateM = fromDate year month day
+      timeM = fromTime hour minute second nano
 
 instance HasLocalDate LocalDateTime where
   getLocalDate (LocalDateTime date _) = date
   setLocalDate date dt@(LocalDateTime date' time)
     | date == date' = dt
-    | otherwise = fromDateAndTime date time
+    | otherwise = fromLocalDateAndTime date time
 
 instance HasLocalTime LocalDateTime where
   getLocalTime (LocalDateTime _ time) = time
   setLocalTime time dt@(LocalDateTime date time')
     | time == time' = dt
-    | otherwise = fromDateAndTime date time
+    | otherwise = fromLocalDateAndTime date time
 
 instance HasYear LocalDateTime where
   getYear = getYear . getLocalDate

@@ -23,7 +23,7 @@ spec =
     describe "addNanos" addNanosSpec
 
 localTime :: Int -> Int -> Int -> Int -> LocalTime
-localTime h m s n = fromJust (fromTimeFields h m s n)
+localTime h m s n = fromJust (fromTime h m s n)
 
 showSpec :: Spec
 showSpec =
@@ -99,7 +99,7 @@ fromTimeFieldsSpec =
     ]
   where
     test arg@(h, m, s, n, expected) =
-      it (show arg) $ fromTimeFields h m s n `shouldBe` expected
+      it (show arg) $ fromTime h m s n `shouldBe` expected
 
 fromNanoOfDaySpec :: Spec
 fromNanoOfDaySpec =
@@ -116,8 +116,7 @@ fromNanoOfDaySpec =
     , (3600000000000, Just $ localTime 1 0 0 0)
     ]
   where
-    test (nano, time) =
-      it (show nano) $ fromNanoOfDay nano `shouldBe` time
+    test (nano, time) = it (show nano) $ fromNanoOfDay nano `shouldBe` time
 
 fromSecondOfDaySpec :: Spec
 fromSecondOfDaySpec =

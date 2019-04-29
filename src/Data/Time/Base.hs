@@ -14,9 +14,9 @@ module Data.Time.Base
   , HasEpochDay(..)
   , HasEpochSecond(..)
   , HasEpochMilli(..)
-  , FromDateFields(..)
-  , FromTimeFields(..)
-  , FromDateTimeFields(..)
+  , FromDate(..)
+  , FromTime(..)
+  , FromDateTime(..)
   , FromEpochDay(..)
   , FromEpochSecond(..)
   , FromYearDay(..)
@@ -120,18 +120,18 @@ class FromYearDay a where
   -- | Creates an instance from a year and a day of year.
   fromYearDay :: Integer -> Int -> a
 
-class FromDateFields a where
+class FromDate a where
   -- | Creates an instance from year, month, day.
-  fromDateFields :: Integer -> Int -> Int -> a
+  fromDate :: Integer -> Int -> Int -> a
 
-class FromTimeFields a where
+class FromTime a where
   -- | Creates an instance from hour, minute, second, nanosecond.
-  fromTimeFields :: Int -> Int -> Int -> Int -> a
+  fromTime :: Int -> Int -> Int -> Int -> a
 
-class FromDateTimeFields a where
+class FromDateTime a where
   -- | Creates an instance from year, month, day, hour, minutes,
   -- second, nanosecond.
-  fromDateTimeFields :: Integer -> Int -> Int -> Int -> Int -> Int -> Int -> a
+  fromDateTime :: Integer -> Int -> Int -> Int -> Int -> Int -> Int -> a
 
 class FromNanoOfDay a where
   -- | Creates an instance from a nanosecond of day.

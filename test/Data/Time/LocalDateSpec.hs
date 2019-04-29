@@ -17,12 +17,12 @@ spec =
     describe "getLocalDate" getLocalDateSpec
     describe "getDayOfYear" getDayOfYearSpec
     describe "getEpochDay" getEpochDaySpec
-    describe "fromDateFields" fromDateFieldsSpec
+    describe "fromDate" fromDateSpec
     describe "fromEpochDay" fromEpochDaySpec
     describe "fromYearDay" fromYearDaySpec
 
 localDate :: Integer -> Int -> Int -> LocalDate
-localDate y m d = fromJust $ fromDateFields y m d
+localDate y m d = fromJust $ fromDate y m d
 
 showSpec :: Spec
 showSpec =
@@ -70,8 +70,8 @@ addDaysSpec =
     , (localDate 2000 1 1, 366, localDate 2001 1 1)
     ]
   where
-    test arg@(fromDate, days, toDate) =
-      it (show arg) $ addDays days fromDate `shouldBe` toDate
+    test arg@(oldDate, days, newDate) =
+      it (show arg) $ addDays days oldDate `shouldBe` newDate
 
 addMonthsSpec :: Spec
 addMonthsSpec =
@@ -98,8 +98,8 @@ addMonthsSpec =
     , (localDate (-123) 1 1, -123, localDate (-134) 10 1)
     ]
   where
-    test arg@(fromDate, months, toDate) =
-      it (show arg) $ addMonths months fromDate `shouldBe` toDate
+    test arg@(oldDate, months, toDate) =
+      it (show arg) $ addMonths months oldDate `shouldBe` toDate
 
 addYearsSpec :: Spec
 addYearsSpec =
@@ -110,8 +110,8 @@ addYearsSpec =
     , (localDate 2001 2 28, -1, localDate 2000 2 28)
     ]
   where
-    test arg@(fromDate, years, toDate) =
-      it (show arg) $ addYears years fromDate `shouldBe` toDate
+    test arg@(oldDate, years, toDate) =
+      it (show arg) $ addYears years oldDate `shouldBe` toDate
 
 setYearSpec :: Spec
 setYearSpec =
@@ -122,8 +122,8 @@ setYearSpec =
     , (localDate 2000 2 29, 2001, localDate 2001 2 28)
     ]
   where
-    test arg@(fromDate, year, toDate) =
-      it (show arg) $ setYear year fromDate `shouldBe` toDate
+    test arg@(oldDate, year, newDate) =
+      it (show arg) $ setYear year oldDate `shouldBe` newDate
 
 setMonthSpec :: Spec
 setMonthSpec =
@@ -134,8 +134,8 @@ setMonthSpec =
     , (localDate 2000 3 29, 2, localDate 2000 2 29)
     ]
   where
-    test arg@(fromDate, month, toDate) =
-      it (show arg) $ setMonth (toEnum month) fromDate `shouldBe` toDate
+    test arg@(oldDate, month, newDate) =
+      it (show arg) $ setMonth (toEnum month) oldDate `shouldBe` newDate
 
 getEpochDaySpec :: Spec
 getEpochDaySpec =
@@ -206,8 +206,8 @@ getDayOfYearSpec =
     test arg@(date, dayOfYear) =
       it (show arg) $ getDayOfYear date `shouldBe` dayOfYear
 
-fromDateFieldsSpec :: Spec
-fromDateFieldsSpec =
+fromDateSpec :: Spec
+fromDateSpec =
   mapM_
     test
     [ (1970, 2, 29, Nothing)
@@ -223,7 +223,7 @@ fromDateFieldsSpec =
     ]
   where
     test arg@(y, m, d, expected) =
-      it (show arg) $ fromDateFields y m d `shouldBe` expected
+      it (show arg) $ fromDate y m d `shouldBe` expected
 
 fromEpochDaySpec :: Spec
 fromEpochDaySpec =

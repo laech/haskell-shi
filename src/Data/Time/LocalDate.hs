@@ -62,7 +62,7 @@ fromEpochDay' epochDay =
       month = (marchMonth0 + 2) `rem` 12 + 1
       dom = doyEst - (marchMonth0 * 306 + 5) `div` 10 + 1
       year = yearEst + adjust + marchMonth0 `div` 10
-   in fromJust (localDateOf year (fromIntegral month) (fromIntegral dom))
+   in fromJust (fromDate year (fromIntegral month) (fromIntegral dom))
   -- Ported from java.time.LocalDate.ofEpochDay
 
 instance MonadFail m => FromYearDay (m LocalDate) where
@@ -73,13 +73,14 @@ fromYearDay' year day =
   if day < 1 || day > getDaysInYear year
     then fail $ "Invalid day of year: " ++ show day
     else pure . fromEpochDay $
-         (getEpochDay . fromJust $ localDateOf year 1 1) + fromIntegral day - 1
+         getEpochDay (fromJust (fromDate year 1 1) :: LocalDate) +
+         fromIntegral (day - 1)
 
-instance MonadFail m => FromDateFields (m LocalDate) where
-  fromDateFields = localDateOf
+instance MonadFail m => FromDate (m LocalDate) where
+  fromDate = fromDate'
 
-localDateOf :: MonadFail m => Integer -> Int -> Int -> m LocalDate
-localDateOf year month day =
+fromDate' :: MonadFail m => Integer -> Int -> Int -> m LocalDate
+fromDate' year month day =
   if monthIsInvalid || dayIsInvalid
     then fail errMsg
     else pure $ LocalDate year (fromIntegral month) (fromIntegral day)
@@ -92,8 +93,7 @@ localDateOf year month day =
       show year ++ ", month=" ++ show month ++ ", dayOfMonth=" ++ show day
 
 clipDayOfMonth :: Integer -> Month -> Int -> LocalDate
-clipDayOfMonth year month day =
-  fromJust $ localDateOf year (fromEnum month) day'
+clipDayOfMonth year month day = fromJust $ fromDate year (fromEnum month) day'
   where
     day' =
       let maxDay = getDaysInMonth (isLeapYear year) month

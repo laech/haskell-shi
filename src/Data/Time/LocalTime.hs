@@ -29,11 +29,11 @@ instance HasLocalTime LocalTime where
   getLocalTime = id
   setLocalTime = const
 
-instance MonadFail m => FromTimeFields (m LocalTime) where
-  fromTimeFields = fromTimeFields'
+instance MonadFail m => FromTime (m LocalTime) where
+  fromTime = fromTime'
 
-fromTimeFields' :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
-fromTimeFields' hour minute second nano =
+fromTime' :: MonadFail m => Int -> Int -> Int -> Int -> m LocalTime
+fromTime' hour minute second nano =
   if hourIsInvalid || minuteIsInvalid || secondIsInvalid || nanoIsInvalid
     then fail $
          "Invalid time: hour=" ++
@@ -59,7 +59,7 @@ fromSecondOfDay' :: MonadFail m => Int -> m LocalTime
 fromSecondOfDay' secondOfDay =
   if secondOfDay < 0 || secondOfDay >= 86400
     then fail $ "Invalid second of day: " ++ show secondOfDay
-    else fromTimeFields' hour minute second 0
+    else fromTime' hour minute second 0
   where
     (hour, (minute, second)) = (`divMod` 60) <$> secondOfDay `divMod` 3600
 
@@ -70,7 +70,7 @@ fromNanoOfDay' :: MonadFail m => Integer -> m LocalTime
 fromNanoOfDay' nanoOfDay =
   if nanoOfDay < 0 || nanoOfDay >= 86400000000000
     then fail $ "Invalid nano of day: " ++ show nanoOfDay
-    else fromTimeFields'
+    else fromTime'
            (fromIntegral hour)
            (fromIntegral minute)
            (fromIntegral second)
