@@ -5,6 +5,8 @@ module Data.Time.LocalDateTime
   , HasLocalDateTime
   , FromLocalDateTime(..)
   , module Data.Time.Base
+  , module Data.Time.LocalDate
+  , module Data.Time.LocalTime
   ) where
 
 import Control.Monad.Fail
