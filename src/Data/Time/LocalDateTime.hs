@@ -24,9 +24,17 @@ class (HasLocalDate a, HasLocalTime a, HasEpochSecond a, HasEpochMilli a) =>
       HasLocalDateTime a
   where
   getLocalDateTime :: a -> LocalDateTime
+  setLocalDateTime :: LocalDateTime -> a -> a
+  setLocalDateTime dt = modifyLocalDateTime (const dt)
+  -- | Calls 'setLocalDateTime' with a new value obtained by apply a
+  -- function to the old one.
+  modifyLocalDateTime :: (LocalDateTime -> LocalDateTime) -> a -> a
+  modifyLocalDateTime f a = setLocalDateTime (f $ getLocalDateTime a) a
+  {-# MINIMAL getLocalDateTime, (setLocalDateTime | modifyLocalDateTime) #-}
 
 instance HasLocalDateTime LocalDateTime where
   getLocalDateTime = id
+  setLocalDateTime = const
 
 class FromLocalDateTime a where
   fromLocalDateTime :: LocalDateTime -> a

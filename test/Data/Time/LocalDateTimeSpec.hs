@@ -13,6 +13,7 @@ spec =
     describe "compare" compareSpec
     describe "getLocalDate" getLocalDateSpec
     describe "getLocalTime" getLocalTimeSpec
+    describe "getLocalDateTime" getLocalDateTimeSpec
     describe "getYear" getYearSpec
     describe "getMonth" getMonthSpec
     describe "getDayOfMonth" getDayOfMonthSpec
@@ -35,6 +36,9 @@ spec =
     describe "addYears" addYearsSpec
     describe "setYear" setYearSpec
     describe "setMonth" setMonthSpec
+    describe "setLocalDate" setLocalDateSpec
+    describe "setLocalTime" setLocalTimeSpec
+    describe "setLocalDateTime" setLocalDateTimeSpec
 
 localDateTime ::
      Integer -> Int -> Int -> Int -> Int -> Int -> Int -> LocalDateTime
@@ -85,6 +89,12 @@ getLocalTimeSpec =
   it "should return the date part" $
   getLocalTime (localDateTime 1 2 3 4 5 6 7) `shouldBe`
   fromJust (fromTime 4 5 6 7)
+
+getLocalDateTimeSpec :: Spec
+getLocalDateTimeSpec =
+  it "should return self" $
+  let dt = localDateTime 1 2 3 4 5 6 7
+   in getLocalDateTime dt `shouldBe` dt
 
 getYearSpec :: Spec
 getYearSpec =
@@ -405,3 +415,24 @@ setMonthSpec =
   where
     test arg@(oldDate, month, newDate) =
       it (show arg) $ setMonth (toEnum month) oldDate `shouldBe` newDate
+
+setLocalDateSpec :: Spec
+setLocalDateSpec =
+  it "should replace the date" $
+  let date = fromJust $ fromDate 1970 1 2
+   in getLocalDate (setLocalDate date $ localDateTime 1980 1 1 1 1 1 1) `shouldBe`
+      date
+
+setLocalTimeSpec :: Spec
+setLocalTimeSpec =
+  it "should replace the time" $
+  let time = fromJust $ fromTime 1 2 3 4
+   in getLocalTime (setLocalTime time $ localDateTime 1 1 1 1 1 1 1) `shouldBe`
+      time
+
+setLocalDateTimeSpec :: Spec
+setLocalDateTimeSpec =
+  it "should replace the time" $
+  let dt = localDateTime 2 2 2 2 2 2 2
+   in getLocalDateTime (setLocalDateTime dt $ localDateTime 1 1 1 1 1 1 1) `shouldBe`
+      dt
