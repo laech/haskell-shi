@@ -100,7 +100,7 @@ class HasSecondOfDay a where
   getSecondOfDay :: a -> Int
 
 class HasEpochDay a where
-  -- | The day since epoch, where day 0 is 1970-01-01.
+  -- | The day since epoch 1970-01-01T00:00:00Z, where day 0 is 1970-01-01.
   getEpochDay :: a -> Integer
 
 class HasEpochSecond a where

@@ -11,6 +11,7 @@ module Data.Time.OffsetDateTime
   ) where
 
 import Control.Monad.Fail
+import Data.Ord
 import Data.Time.Base
 import Data.Time.LocalDate
 import Data.Time.LocalDateTime
@@ -104,3 +105,9 @@ instance HasEpochMilli OffsetDateTime where
 
 instance Show OffsetDateTime where
   show (OffsetDateTime offset dt) = show dt ++ show offset
+
+instance Ord OffsetDateTime where
+  compare a b =
+    case comparing getEpochLocalDateTime a b of
+      EQ -> comparing getLocalDateTime a b
+      ord -> ord
