@@ -16,8 +16,8 @@ import Data.Time.LocalTime
 
 -- | Date and time without time zone.
 data LocalDateTime =
-  LocalDateTime LocalDate
-                LocalTime
+  LocalDateTime !LocalDate
+                !LocalTime
   deriving (Eq, Ord)
 
 class (HasLocalDate a, HasLocalTime a, HasEpochSecond a, HasEpochMilli a) =>

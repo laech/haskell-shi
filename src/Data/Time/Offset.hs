@@ -1,17 +1,22 @@
 module Data.Time.Offset
-  ( Offset(getTotalOffsetSeconds)
+  ( Offset
+  , getTotalOffsetSeconds
   , offsetOfSeconds
   , utcOffset
   ) where
 
 import Control.Monad.Fail
+import Data.Int
 import Data.Maybe
 import Prelude hiding (fail)
 
 -- | A time offset from UTC.
-newtype Offset = Offset
-  { getTotalOffsetSeconds :: Int
-  } deriving (Eq, Ord)
+newtype Offset =
+  Offset Int32
+  deriving (Eq, Ord)
+
+getTotalOffsetSeconds :: Offset -> Int
+getTotalOffsetSeconds (Offset seconds) = fromIntegral seconds
 
 -- | Create an instance with offset in the given seconds. Errors if
 -- value is not within -18:00 and +18:00.
@@ -21,7 +26,7 @@ offsetOfSeconds seconds =
     then fail errmsg
     else pure offset
   where
-    offset = Offset seconds
+    offset = Offset $ fromIntegral seconds
     errmsg = show seconds ++ " is not between " ++ minstr ++ " and " ++ maxstr
     minstr = show $ getTotalOffsetSeconds minBound
     maxstr = show $ getTotalOffsetSeconds maxBound
@@ -31,7 +36,7 @@ utcOffset = fromJust $ offsetOfSeconds 0
 
 instance Bounded Offset where
   maxBound = Offset $ 18 * 60 * 60
-  minBound = Offset $ -(getTotalOffsetSeconds maxBound)
+  minBound = Offset $ 18 * 60 * 60 * (-1)
 
 instance Show Offset where
   show offset = show' $ getTotalOffsetSeconds offset

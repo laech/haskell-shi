@@ -16,9 +16,9 @@ import Prelude hiding (fail)
 
 -- | A date without time zone.
 data LocalDate =
-  LocalDate Integer
-            Word8
-            Word8
+  LocalDate !Integer
+            {-# UNPACK #-}!Word8
+            {-# UNPACK #-}!Word8
   deriving (Eq, Ord)
 
 class ( HasYear a
