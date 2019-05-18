@@ -59,10 +59,10 @@ class HasMonth a where
   -- 11 will return 2000-11-30, as 2000-11-31 would be invalid.
   setMonth :: Month -> a -> a
 
-class HasDayOfMonth a where
+class AddDays a => HasDayOfMonth a where
   getDayOfMonth :: a -> Int
 
-class HasDayOfYear a where
+class AddDays a => HasDayOfYear a where
 
   -- | The day of year, between 1 and 365 (or 366 for a leap year).
   getDayOfYear :: a -> Int

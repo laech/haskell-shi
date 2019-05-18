@@ -21,13 +21,7 @@ data LocalDate =
             {-# UNPACK #-}!Word8
   deriving (Eq, Ord)
 
-class ( HasYear a
-      , HasMonth a
-      , HasDayOfMonth a
-      , HasDayOfYear a
-      , HasEpochDay a
-      , AddDays a
-      ) =>
+class (HasYear a, HasMonth a, HasDayOfMonth a, HasDayOfYear a, HasEpochDay a) =>
       HasLocalDate a
   where
   getLocalDate :: a -> LocalDate
