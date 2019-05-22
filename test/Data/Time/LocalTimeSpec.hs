@@ -10,9 +10,13 @@ spec =
     describe "show" showSpec
     describe "compare" compareSpec
     describe "bounded" boundedSpec
-    describe "fromTimeFields" fromTimeFieldsSpec
+    describe "fromTime" fromTimeSpec
     describe "fromNanoOfDay" fromNanoOfDaySpec
     describe "fromSecondOfDay" fromSecondOfDaySpec
+    describe "getHour" getHourSpec
+    describe "getMinute" getMinuteSpec
+    describe "getSecond" getSecondSpec
+    describe "getNanoOfSecond" getNanoOfSecondSpec
     describe "getLocalTime" getLocalTimeSpec
     describe "getSecondOfDay" getSecondOfDaySpec
     describe "getNanoOfDay" getNanoOfDaySpec
@@ -78,8 +82,8 @@ boundedSpec = do
   it "maxBound is 23:59:59.999999999" $
     maxBound `shouldBe` localTime 23 59 59 999999999
 
-fromTimeFieldsSpec :: Spec
-fromTimeFieldsSpec =
+fromTimeSpec :: Spec
+fromTimeSpec =
   mapM_
     test
     [ (-1, 0, 0, 0, Nothing)
@@ -140,6 +144,47 @@ getLocalTimeSpec :: Spec
 getLocalTimeSpec =
   it "should return self" $
   getLocalTime (localTime 1 2 3 4) `shouldBe` localTime 1 2 3 4
+
+getHourSpec :: Spec
+getHourSpec =
+  mapM_
+    test
+    [(localTime 0 2 3 4, 0), (localTime 1 2 3 4, 1), (localTime 23 2 3 4, 23)]
+  where
+    test arg@(time, hour) = it (show arg) $ getHour time `shouldBe` hour
+
+getMinuteSpec :: Spec
+getMinuteSpec =
+  mapM_
+    test
+    [ (localTime 10 0 2 3, 0)
+    , (localTime 10 1 2 3, 1)
+    , (localTime 10 59 2 3, 59)
+    ]
+  where
+    test arg@(time, minute) = it (show arg) $ getMinute time `shouldBe` minute
+
+getSecondSpec :: Spec
+getSecondSpec =
+  mapM_
+    test
+    [ (localTime 10 10 0 2, 0)
+    , (localTime 10 10 1 2, 1)
+    , (localTime 10 10 59 2, 59)
+    ]
+  where
+    test arg@(time, second) = it (show arg) $ getSecond time `shouldBe` second
+
+getNanoOfSecondSpec :: Spec
+getNanoOfSecondSpec =
+  mapM_
+    test
+    [ (localTime 10 10 10 0, 0)
+    , (localTime 10 10 10 1, 1)
+    , (localTime 10 10 10 999999999, 999999999)
+    ]
+  where
+    test arg@(time, nano) = it (show arg) $ getNanoOfSecond time `shouldBe` nano
 
 getSecondOfDaySpec :: Spec
 getSecondOfDaySpec =
