@@ -113,7 +113,10 @@ instance Show OffsetDateTime where
   show (OffsetDateTime offset dt) = show dt ++ show offset
 
 instance Ord OffsetDateTime where
-  compare a b =
-    case comparing getEpochLocalDateTime a b of
-      EQ -> comparing getLocalDateTime a b
-      ord -> ord
+  compare a b
+    | offsetEq || epochDateTimeEq = comparing getLocalDateTime a b
+    | otherwise = epochDateTimeOrd
+    where
+      offsetEq = comparing getOffset a b == EQ
+      epochDateTimeEq = epochDateTimeOrd == EQ
+      epochDateTimeOrd = comparing getEpochLocalDateTime a b
