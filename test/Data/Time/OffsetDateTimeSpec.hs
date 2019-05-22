@@ -10,6 +10,7 @@ spec =
   describe "OffsetDateTime" $ do
     describe "show" showSpec
     describe "compare" compareSpec
+    describe "getOffset" getOffsetSpec
     describe "getYear" getYearSpec
     describe "getMonth" getMonthSpec
     describe "getDayOfMonth" getDayOfMonthSpec
@@ -31,6 +32,7 @@ spec =
     describe "setLocalDate" setLocalDateSpec
     describe "setLocalTime" setLocalTimeSpec
     describe "setLocalDateTime" setLocalDateTimeSpec
+    describe "setOffset" setOffsetSpec
     describe "addNanos" addNanosSpec
     describe "addSeconds" addSecondsSpec
     describe "addMinutes" addMinutesSpec
@@ -102,6 +104,12 @@ compareSpec =
     ]
   where
     test arg@(result, a, b) = it (show arg) $ a `compare` b `shouldBe` result
+
+getOffsetSpec :: Spec
+getOffsetSpec =
+  it "should return the correct offset" $
+  getOffset (offsetDateTime 1970 1 1 2 3 4 5 $ offsetOfSeconds' 11) `shouldBe`
+  offsetOfSeconds' 11
 
 getYearSpec :: Spec
 getYearSpec =
@@ -261,6 +269,14 @@ setLocalDateTimeSpec =
     (fromJust $ fromDateTime 1999 3 7 1 2 3 4)
     (offsetDateTime 1970 1 1 0 0 0 0 (offsetOfSeconds' 8)) `shouldBe`
   offsetDateTime 1999 3 7 1 2 3 4 (offsetOfSeconds' 8)
+
+setOffsetSpec :: Spec
+setOffsetSpec =
+  it "should set the correct offset" $
+  setOffset
+    (offsetOfSeconds' 11)
+    (offsetDateTime 1970 1 1 0 0 0 0 (offsetOfSeconds' 8)) `shouldBe`
+  offsetDateTime 1970 1 1 0 0 0 0 (offsetOfSeconds' 11)
 
 addNanosSpec :: Spec
 addNanosSpec =

@@ -36,6 +36,12 @@ modifyLocalDateTime' ::
      HasLocalDateTime a => (x -> LocalDateTime -> LocalDateTime) -> x -> a -> a
 modifyLocalDateTime' f x = modifyLocalDateTime (f x . getLocalDateTime)
 
+instance HasOffset OffsetDateTime where
+  getOffset (OffsetDateTime offset _) = offset
+  setOffset offset' o@(OffsetDateTime offset dt)
+    | offset == offset' = o
+    | otherwise = OffsetDateTime offset' dt
+
 instance HasLocalDateTime OffsetDateTime where
   getLocalDateTime (OffsetDateTime _ dt) = dt
   setLocalDateTime dt o@(OffsetDateTime offset dt')

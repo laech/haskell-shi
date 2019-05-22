@@ -1,5 +1,6 @@
 module Data.Time.Offset
   ( Offset
+  , HasOffset(..)
   , getTotalOffsetSeconds
   , offsetOfSeconds
   , utcOffset
@@ -14,6 +15,14 @@ import Prelude hiding (fail)
 newtype Offset =
   Offset Int32
   deriving (Eq, Ord)
+
+class HasOffset a where
+  getOffset :: a -> Offset
+  setOffset :: Offset -> a -> a
+
+instance HasOffset Offset where
+  getOffset = id
+  setOffset = const
 
 getTotalOffsetSeconds :: Offset -> Int
 getTotalOffsetSeconds (Offset seconds) = fromIntegral seconds
