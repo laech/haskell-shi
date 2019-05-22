@@ -62,7 +62,7 @@ show' offsetSeconds =
         then "-"
         else "+"
     pad i =
-      if i > 10
+      if i >= 10
         then show i
         else "0" ++ show i
     showIfNonZero i =

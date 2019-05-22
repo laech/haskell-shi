@@ -28,6 +28,8 @@ showSpec =
     , ("+18:00", offsetOfSeconds' 64800)
     , ("-00:00:01", offsetOfSeconds' (-1))
     , ("-00:01", offsetOfSeconds' (-60))
+    , ("+10:30", offsetOfSeconds' 37800)
+    , ("-10:30", offsetOfSeconds' (-37800))
     ]
   where
     test (str, offset) = it str $ show offset `shouldBe` str
