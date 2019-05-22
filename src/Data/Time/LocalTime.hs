@@ -33,6 +33,8 @@ class ( HasHour a
   where
   getLocalTime :: a -> LocalTime
   setLocalTime :: LocalTime -> a -> a
+  modifyLocalTime :: (LocalTime -> LocalTime) -> a -> a
+  modifyLocalTime f a = setLocalTime (f $ getLocalTime a) a
 
 instance HasLocalTime LocalTime where
   getLocalTime = id
