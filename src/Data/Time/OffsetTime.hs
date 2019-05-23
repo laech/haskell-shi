@@ -23,6 +23,16 @@ instance MonadFail m => FromTime (Offset -> m OffsetTime) where
   fromTime hour minute second nano offset =
     OffsetTime offset <$> fromTime hour minute second nano
 
+instance MonadFail m => FromNanoOfDay (Offset -> m OffsetTime) where
+  fromNanoOfDay nano offset = (`fromLocalTime` offset) <$> fromNanoOfDay nano
+
+instance MonadFail m => FromSecondOfDay (Offset -> m OffsetTime) where
+  fromSecondOfDay second offset =
+    (`fromLocalTime` offset) <$> fromSecondOfDay second
+
+instance FromLocalTime (Offset -> OffsetTime) where
+  fromLocalTime = flip OffsetTime
+
 instance Show OffsetTime where
   show (OffsetTime offset time) = show time ++ show offset
 

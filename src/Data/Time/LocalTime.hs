@@ -3,6 +3,7 @@
 module Data.Time.LocalTime
   ( LocalTime
   , HasLocalTime(..)
+  , FromLocalTime(..)
   , addTime
   , module Data.Time.Base
   ) where
@@ -35,6 +36,12 @@ class ( HasHour a
   setLocalTime :: LocalTime -> a -> a
   modifyLocalTime :: (LocalTime -> LocalTime) -> a -> a
   modifyLocalTime f a = setLocalTime (f $ getLocalTime a) a
+
+class FromLocalTime a where
+  fromLocalTime :: LocalTime -> a
+
+instance FromLocalTime LocalTime where
+  fromLocalTime = id
 
 instance HasLocalTime LocalTime where
   getLocalTime = id
