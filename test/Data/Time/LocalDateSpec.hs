@@ -35,7 +35,10 @@ showSpec =
     , (localDate 1 1 1, "0001-01-01")
     , (localDate (-1) 1 1, "-0001-01-01")
     , (localDate (-99999) 1 1, "-99999-01-01")
-    , (localDate 99999 1 1, "99999-01-01")
+    , (localDate 9999 1 1, "9999-01-01")
+    -- ISO 8601: >4 digit years must have +/- prefix
+    , (localDate 10000 1 1, "+10000-01-01")
+    , (localDate 99999 1 1, "+99999-01-01")
     ]
   where
     test (date, str) = it str $ show date `shouldBe` str
