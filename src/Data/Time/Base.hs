@@ -1,5 +1,10 @@
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE GADTs #-}
+
 module Data.Time.Base
-  ( HasYear(..)
+  ( TimeField(..)
+  , HasField(..)
+  , HasYear(..)
   , HasMonth(..)
   , HasDayOfMonth(..)
   , HasDayOfYear(..)
@@ -23,7 +28,23 @@ module Data.Time.Base
   , FromSecondOfDay(..)
   ) where
 
+import Data.Maybe
 import Data.Time.Month
+import Prelude hiding (fail)
+
+data TimeField a where
+  Year :: TimeField Integer
+  MonthOfYear :: TimeField Int
+  DayOfMonth :: TimeField Int
+  DayOfYear :: TimeField Int
+
+deriving instance Eq a => Eq (TimeField a)
+
+deriving instance Show a => Show (TimeField a)
+
+class HasField a where
+  get :: TimeField b -> a -> Maybe b
+  fromFields :: HasField b => b -> Maybe a
 
 class HasYear a where
   getYear :: a -> Integer

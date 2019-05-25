@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FlexibleInstances #-}
 
 module Data.Time.LocalDate
@@ -6,9 +8,12 @@ module Data.Time.LocalDate
   , module Data.Time.Base
   ) where
 
+import Control.Applicative
+import Control.Monad hiding (fail)
 import Control.Monad.Fail
 import Data.Maybe
 import Data.Time.Base
+import Data.Time.Format
 import Data.Time.Month
 import Data.Time.Year
 import Data.Word
@@ -173,21 +178,28 @@ instance HasEpochDay LocalDate where
       numDaysFromYear0To1970 = 719528
 
 instance Show LocalDate where
-  show = show'
+  show =
+    fromJust .
+    format
+      [ MinDigits 4 Year
+      , Literal "-"
+      , MinDigits 2 MonthOfYear
+      , Literal "-"
+      , MinDigits 2 DayOfMonth
+      ]
 
-show' :: LocalDate -> String
-show' date = year ++ "-" ++ month ++ "-" ++ day
+instance HasField LocalDate where
+  get Year = Just . getYear
+  get MonthOfYear = Just . fromEnum . getMonth
+  get DayOfMonth = Just . getDayOfMonth
+  get DayOfYear = Just . getDayOfYear
+  get _ = const Nothing
+  fromFields = fromFields'
+
+fromFields' :: HasField b => b -> Maybe LocalDate
+fromFields' xs = fromDateFields' <|> fromYearDayFields'
   where
-    yearAbs = abs $ getYear date
-    year =
-      (if getYear date < 0
-         then "-"
-         else "") ++
-      pad 4 (show yearAbs)
-    month = pad 2 . show . fromEnum . getMonth $ date
-    day = pad 2 . show . getDayOfMonth $ date
-    pad n s =
-      let len = length s
-       in if len >= n
-            then s
-            else replicate (n - len) '0' ++ s
+    fromYearDayFields' = lift2 fromYearDay Year DayOfYear
+    fromDateFields' = lift3 fromDate Year MonthOfYear DayOfMonth
+    lift2 f a b = join $ liftA2 f (get a xs) (get b xs)
+    lift3 f a b c = join $ liftA3 f (get a xs) (get b xs) (get c xs)
