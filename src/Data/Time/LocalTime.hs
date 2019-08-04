@@ -17,10 +17,7 @@ import Prelude hiding (fail)
 
 -- | Time without time zone.
 data LocalTime =
-  LocalTime {-# UNPACK #-}!Word8
-            {-# UNPACK #-}!Word8
-            {-# UNPACK #-}!Word8
-            {-# UNPACK #-}!Word32
+  LocalTime !Word8 !Word8 !Word8 !Word32
   deriving (Eq, Ord)
 
 class ( HasHour a

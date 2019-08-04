@@ -20,8 +20,7 @@ import Data.Time.Offset
 
 -- | A date and time with an offset.
 data OffsetDateTime =
-  OffsetDateTime {-# UNPACK #-}!Offset
-                 !LocalDateTime
+  OffsetDateTime !Offset !LocalDateTime
   deriving (Eq)
 
 instance MonadFail m => FromDateTime (Offset -> m OffsetDateTime) where
