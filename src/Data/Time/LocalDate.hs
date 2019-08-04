@@ -13,7 +13,6 @@ import Control.Monad hiding (fail)
 import Control.Monad.Fail
 import Data.Maybe
 import Data.Time.Base
-import Data.Time.Format
 import Data.Time.Month
 import Data.Time.Year
 import Data.Word
@@ -21,9 +20,7 @@ import Prelude hiding (fail)
 
 -- | A date without time zone.
 data LocalDate =
-  LocalDate !Integer
-            {-# UNPACK #-}!Word8
-            {-# UNPACK #-}!Word8
+  LocalDate !Integer {-# UNPACK #-}!Word8 {-# UNPACK #-}!Word8
   deriving (Eq, Ord)
 
 class (HasYear a, HasMonth a, HasDayOfMonth a, HasDayOfYear a, HasEpochDay a) =>
@@ -178,22 +175,31 @@ instance HasEpochDay LocalDate where
       numDaysFromYear0To1970 = 719528
 
 instance Show LocalDate where
-  show =
-    fromJust .
-    format
-      [ MinDigits 4 Year
-      , Literal "-"
-      , MinDigits 2 MonthOfYear
-      , Literal "-"
-      , MinDigits 2 DayOfMonth
-      ]
+  show = show'
+
+show' :: LocalDate -> String
+show' date = year ++ "-" ++ month ++ "-" ++ day
+  where
+    prefix
+      | getYear date < 0 = "-"
+      | getYear date > 9999 = "+"
+      | otherwise = ""
+    year = prefix ++ pad 4 (abs . getYear $ date)
+    month = pad 2 . fromEnum . getMonth $ date
+    day = pad 2 . getDayOfMonth $ date
+    pad :: (Show a) => Int -> a -> String
+    pad n a =
+      let str = show a
+          len = length str
+       in if len >= n
+            then str
+            else replicate (n - len) '0' ++ str
 
 instance HasField LocalDate where
   get Year = Just . getYear
   get MonthOfYear = Just . fromEnum . getMonth
   get DayOfMonth = Just . getDayOfMonth
   get DayOfYear = Just . getDayOfYear
-  get _ = const Nothing
   fromFields = fromFields'
 
 fromFields' :: HasField b => b -> Maybe LocalDate
