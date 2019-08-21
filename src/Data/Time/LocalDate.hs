@@ -178,15 +178,15 @@ instance Show LocalDate where
   show = show'
 
 show' :: LocalDate -> String
-show' date = year ++ "-" ++ month ++ "-" ++ day
+show' (LocalDate year month day) = yearS ++ "-" ++ monthS ++ "-" ++ dayS
   where
     prefix
-      | getYear date < 0 = "-"
-      | getYear date > 9999 = "+"
+      | year < 0 = "-"
+      | year > 9999 = "+"
       | otherwise = ""
-    year = prefix ++ pad 4 (abs . getYear $ date)
-    month = pad 2 . fromEnum . getMonth $ date
-    day = pad 2 . getDayOfMonth $ date
+    yearS = prefix ++ pad 4 (abs year)
+    monthS = pad 2 . fromEnum $ month
+    dayS = pad 2 day
     pad :: (Show a) => Int -> a -> String
     pad n a =
       let str = show a
